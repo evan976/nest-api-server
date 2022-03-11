@@ -7,11 +7,14 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common'
 import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger'
 import { QueryParams } from '@interface/pagination.interface'
 import { CategoryDto } from '@module/category/category.dto'
 import { CategoryService } from '@module/category/category.service'
+import { JwtAuthGuard } from '@/guard/jwt-auth.guard'
+import { Role } from '@/guard/role.guard'
 
 @ApiTags('分类')
 @Controller('categories')
@@ -20,6 +23,8 @@ export class CategoryController {
 
   @ApiOperation({ summary: '创建分类' })
   @Post()
+  @Role('admin')
+  @UseGuards(JwtAuthGuard)
   create(@Body() body: CategoryDto) {
     return this.categortService.create(body)
   }
@@ -42,6 +47,8 @@ export class CategoryController {
   @ApiOperation({ summary: '根据 id 更新分类' })
   @ApiParam({ name: 'id', required: true, description: '分类 id' })
   @Put(':id')
+  @Role('admin')
+  @UseGuards(JwtAuthGuard)
   update(@Param('id') id: string, @Body() body: CategoryDto) {
     return this.categortService.update(id, body)
   }
@@ -49,6 +56,8 @@ export class CategoryController {
   @ApiOperation({ summary: '根据 id 删除分类' })
   @ApiParam({ name: 'id', required: true, description: '分类 id' })
   @Delete(':id')
+  @Role('admin')
+  @UseGuards(JwtAuthGuard)
   remove(@Param('id') id: string) {
     return this.categortService.remove(id)
   }

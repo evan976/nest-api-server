@@ -1,11 +1,13 @@
 import { NestFactory } from '@nestjs/core'
 import { ConsoleLogger, ValidationPipe } from '@nestjs/common'
-import { AppModule } from '@/app.module'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { NestExpressApplication } from '@nestjs/platform-express'
+import * as bodyParser from 'body-parser'
+import * as compression from 'compression'
+import { AppModule } from '@/app.module'
 import { HttpExceptionFilter } from '@filter/http-exception.filter'
 import { LoggerInterceptor } from '@logger/logger.interceptor'
 import { TransformInterceptor } from '@transform/transform.interceptor'
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
 async function bootstrap() {
   const logger = new ConsoleLogger()
@@ -19,6 +21,7 @@ async function bootstrap() {
     logger: logger,
   })
 
+  app.use(compression())
   app.setGlobalPrefix('api')
 
   const config = new DocumentBuilder()
@@ -37,6 +40,9 @@ async function bootstrap() {
     new LoggerInterceptor(logger),
     new TransformInterceptor()
   )
+
+  app.use(bodyParser.json({ limit: '10mb' }))
+  app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }))
 
   await app.listen(8848)
 }

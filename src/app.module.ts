@@ -10,6 +10,8 @@ import { PostModule } from '@module/post/post.module'
 import { parseEnv } from '@config/env'
 import { Category } from '@module/category/category.entity'
 import { CategoryModule } from '@module/category/category.module'
+import { User } from '@module/user/user.entity'
+import { AuthModule } from '@module/auth/auth.module'
 
 @Module({
   imports: [
@@ -22,7 +24,7 @@ import { CategoryModule } from '@module/category/category.module'
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         type: 'mysql',
-        entities: [Tag, Post, Category],
+        entities: [User, Tag, Post, Category],
         host: configService.get('DB_HOST', 'localhost'),
         port: configService.get<number>('DB_PORT', 3306),
         username: configService.get('DB_USER', 'root'),
@@ -36,6 +38,7 @@ import { CategoryModule } from '@module/category/category.module'
     TagModule,
     PostModule,
     CategoryModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
