@@ -28,8 +28,14 @@ export class User {
   name: string
 
   @Exclude()
-  @Column({ length: 50 })
+  @Column({ length: 500 })
   password: string
+
+  @Exclude()
+  newPassword: string
+
+  @Exclude()
+  relNewPassword: string
 
   @Column({ length: 50, default: null })
   avatar: string

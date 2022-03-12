@@ -19,13 +19,14 @@ export class RoleGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const role = this.reflector.get<string[]>('role', context.getHandler())
+
     if (!role) {
       return true
     }
 
     const request = context.switchToHttp().getRequest()
 
-    let token = request.headers.authorization
+    let token = request.headers.authorization as string
 
     if (/Bearer/.test(token)) {
       token = token.split(' ').pop()
@@ -35,7 +36,8 @@ export class RoleGuard implements CanActivate {
     if (!user) {
       return false
     }
-    const hasRole = role.some((role) => role === user.role)
+
+    const hasRole = role.some((v) => v === user.role)
     return user && user.role && hasRole
   }
 }
