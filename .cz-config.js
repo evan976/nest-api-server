@@ -1,35 +1,35 @@
 module.exports = {
   types: [
     {
-      value: 'feat',
+      value: '✨ feat',
       name: '✨ feat（新功能）',
     },
     {
-      value: 'fix',
+      value: '🐛 fix',
       name: '🐛 fix（Bug 修复）',
     },
     {
-      value: 'docs',
+      value: '📝 docs',
       name: '📝 docs（文档更新）',
     },
     {
-      value: 'style',
+      value: '💄 style',
       name: '💄 style（代码样式更改，例如空格、格式、缺少分号等）',
     },
     {
-      value: 'refactor',
+      value: '💡 refactor',
       name: '💡 refactor（重构代码）',
     },
     {
-      value: 'perf',
+      value: '⚡️ perf',
       name: '⚡️ perf（性能优化）',
     },
     {
-      value: 'test',
+      value: '✅ test',
       name: '✅ test（添加缺失或修正测试代码）',
     },
     {
-      value: 'chore',
+      value: '🔨 chore',
       name: '🔨 chore（构建相关的代码或工具库，如文档生成等）',
     },
   ],
