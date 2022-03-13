@@ -9,7 +9,7 @@ import {
 import { Exclude } from 'class-transformer'
 import * as bcrypt from 'bcryptjs'
 
-@Entity('users')
+@Entity()
 export class User {
   // compare password
   static async comparePassword(password: string, newPassword: string) {
@@ -22,7 +22,7 @@ export class User {
   }
 
   @PrimaryGeneratedColumn()
-  id: string
+  id: number
 
   @Column({ length: 50 })
   name: string

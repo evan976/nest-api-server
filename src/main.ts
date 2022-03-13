@@ -28,7 +28,7 @@ async function bootstrap() {
     .setTitle('NestPress')
     .setDescription('RESTful Api server application for my blog')
     .setVersion('2.0.0')
-    .addServer('api')
+    .addServer('')
     .addBearerAuth()
     .build()
 

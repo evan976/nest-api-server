@@ -69,7 +69,7 @@ export class CategoryService {
       throw new HttpException('分类不存在', HttpStatus.NOT_FOUND)
     }
     const updatedCategory = this.categoryRepository.merge(category, body)
-    return this.categoryRepository.save(updatedCategory)
+    return await this.categoryRepository.save(updatedCategory)
   }
 
   async remove(id: string): Promise<boolean> {

@@ -17,7 +17,8 @@
       "@logger/*": ["src/logger/*"],
       "@interface/*": ["src/interface/*"],
       "@filter/*": ["src/filter/*"],
-      "@transform/*": ["src/transform/*"]
+      "@transform/*": ["src/transform/*"],
+      "@guard/*": ["src/guard/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

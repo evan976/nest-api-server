@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { User } from '@module/user/user.entity'
 import { ConfigService } from '@nestjs/config'
-import { PaginateResult, QueryParams } from '@/interface/pagination.interface'
+import { PaginateResult, QueryParams } from '@interface/pagination.interface'
 
 @Injectable()
 export class UserService {

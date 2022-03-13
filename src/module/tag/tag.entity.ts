@@ -8,10 +8,10 @@ import {
 } from 'typeorm'
 import { Post } from '@module/post/post.entity'
 
-@Entity('tags')
+@Entity()
 export class Tag {
   @PrimaryGeneratedColumn()
-  id: string
+  id: number
 
   @Column()
   label: string
@@ -19,8 +19,14 @@ export class Tag {
   @Column()
   value: string
 
-  @Column()
+  @Column({ default: 'blue' })
   color: string
+
+  @Column({ default: null })
+  icon: string
+
+  @Column({ default: null })
+  background: string
 
   @ManyToMany(() => Post, (post) => post.tags)
   posts: Array<Post>

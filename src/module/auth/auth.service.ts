@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { User } from '@module/user/user.entity'
 import { UserService } from '@module/user/user.service'
-import { Token } from '@/interface'
+import { Token } from '@interface/index'
 
 @Injectable()
 export class AuthService {
@@ -17,7 +17,7 @@ export class AuthService {
   }
 
   async validateUser(payload: User): Promise<User> {
-    const user = await this.userService.findOne(payload.id)
+    const user = await this.userService.findOne(String(payload.id))
     return user
   }
 

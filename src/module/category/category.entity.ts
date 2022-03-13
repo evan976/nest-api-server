@@ -8,10 +8,10 @@ import {
 } from 'typeorm'
 import { Post } from '@module/post/post.entity'
 
-@Entity('categories')
+@Entity()
 export class Category {
   @PrimaryGeneratedColumn()
-  id: string
+  id: number
 
   @Column()
   name: string
@@ -19,8 +19,14 @@ export class Category {
   @Column()
   slug: string
 
-  @Column({ length: 50 })
+  @Column({ default: null })
   description: string
+
+  @Column({ default: null })
+  icon: string
+
+  @Column({ default: null })
+  background: string
 
   @OneToMany(() => Post, (post) => post.category)
   posts: Array<Post>

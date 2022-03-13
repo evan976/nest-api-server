@@ -8,11 +8,19 @@ export class TagService {
   constructor(@InjectRepository(Tag) private tagRepository: Repository<Tag>) {}
 
   async create(tag: Partial<Tag>): Promise<Tag> {
-    const { label } = tag
-    const exist = await this.tagRepository.findOne({ where: { label } })
+    const { label, value } = tag
 
-    if (exist) {
-      throw new HttpException('标签已存在', HttpStatus.BAD_REQUEST)
+    const tags = await this.tagRepository
+      .createQueryBuilder('tag')
+      .where('tag.label = :name', { label })
+      .orWhere('tag.value = :value', { value })
+      .getMany()
+
+    if (tags.length) {
+      throw new HttpException(
+        `名称 ${label} 或别名 ${value} 的标签已存在`,
+        HttpStatus.BAD_REQUEST
+      )
     }
 
     const model = this.tagRepository.create(tag)
@@ -36,16 +44,39 @@ export class TagService {
   }
 
   async findOne(id: string): Promise<Tag> {
-    const tag = await this.tagRepository
-      .createQueryBuilder('tag')
-      .where('tag.id=:id')
-      .orWhere('tag.label=:id')
-      .orWhere('tag.value=:id')
-      .setParameter('id', id)
-      .getOne()
+    const tag = await this.tagRepository.findOne(id)
     if (!tag) {
       throw new HttpException('标签不存在', HttpStatus.NOT_FOUND)
     }
     return tag
+  }
+
+  async findByIds(ids: string[]): Promise<Tag[]> {
+    return this.tagRepository.findByIds(ids)
+  }
+
+  async update(id: string, body: Partial<Tag>): Promise<Tag> {
+    const tag = await this.tagRepository.findOne(id)
+    if (!tag) {
+      throw new HttpException('标签不存在', HttpStatus.NOT_FOUND)
+    }
+    const updatedTag = this.tagRepository.merge(tag, body)
+    return await this.tagRepository.save(updatedTag)
+  }
+
+  async remove(id: string): Promise<boolean> {
+    try {
+      const tag = await this.tagRepository.findOne(id)
+      if (!tag) {
+        throw new HttpException('分类不存在', HttpStatus.NOT_FOUND)
+      }
+      await this.tagRepository.remove(tag)
+      return true
+    } catch (error) {
+      throw new HttpException(
+        '删除失败，可能存在关联文章',
+        HttpStatus.BAD_REQUEST
+      )
+    }
   }
 }

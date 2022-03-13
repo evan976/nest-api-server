@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
+import { PassportModule } from '@nestjs/passport'
 import { AuthController } from '@module/auth/auth.controller'
 import { AuthService } from '@module/auth/auth.service'
 import { UserModule } from '@module/user/user.module'
 import { JwtStrategy } from '@module/auth/jwt.strategy'
-import { PassportModule } from '@nestjs/passport'
 
 const passportModule = PassportModule.register({ defaultStrategy: 'jwt' })
 
