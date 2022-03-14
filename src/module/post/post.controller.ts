@@ -1,9 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
+  Patch,
   Post,
+  Put,
   Query,
   Req,
   UseGuards,
@@ -96,5 +99,36 @@ export class PostController {
       return this.postService.findByCateId(id, 'tag', query, true)
     }
     return this.postService.findByCateId(id, 'tag', query)
+  }
+
+  @ApiOperation({ summary: '更新文章' })
+  @UseGuards(JwtAuthGuard)
+  @Role('admin')
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() body: Partial<PostEntity>) {
+    return this.postService.update(id, body)
+  }
+
+  @ApiOperation({ summary: '删除文章' })
+  @UseGuards(JwtAuthGuard)
+  @Role('admin')
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    return this.postService.remove(id)
+  }
+
+  @ApiOperation({ summary: '更新文章访问数量' })
+  @Patch(':id/view')
+  async updateViews(@Param('id') id: string) {
+    return this.postService.updateViews(id)
+  }
+
+  @ApiOperation({ summary: '更新文章喜欢数量' })
+  @Patch(':id/like')
+  async updateLikes(
+    @Param('id') id: string,
+    @Body('type') type: 'like' | 'dislike'
+  ) {
+    return this.postService.updateLikes(id, type)
   }
 }

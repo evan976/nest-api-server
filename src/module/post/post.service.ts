@@ -126,6 +126,23 @@ export class PostService {
     return { data, total, page, pageSize, totalPage }
   }
 
+  async update(id: string, body: Partial<Post>): Promise<Post> {
+    const exist = await this.postRepository.findOne(id)
+    if (!exist) {
+      throw new HttpException('文章不存在', HttpStatus.NOT_FOUND)
+    }
+    const post = this.postRepository.merge(exist, body)
+    return await this.postRepository.save(post)
+  }
+
+  async remove(id: string): Promise<Post> {
+    const exist = await this.postRepository.findOne(id)
+    if (!exist) {
+      throw new HttpException('文章不存在', HttpStatus.NOT_FOUND)
+    }
+    return await this.postRepository.remove(exist)
+  }
+
   async updateViews(id: string): Promise<Post> {
     const post = await this.postRepository.findOne(id)
     const updated = this.postRepository.merge(post, {
