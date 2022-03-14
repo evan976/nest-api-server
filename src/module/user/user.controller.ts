@@ -30,7 +30,7 @@ export class UserController {
   @ApiOperation({ summary: '获取当前登录用户信息' })
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
-  @Get('current')
+  @Get('admin')
   async findOne(@Req() req: Request) {
     return req.user
   }

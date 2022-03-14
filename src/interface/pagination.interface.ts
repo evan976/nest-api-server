@@ -1,5 +1,5 @@
 export interface QueryParams {
-  [key: string]: string
+  [key: string]: string | number
 }
 
 export interface PaginateResult<T> {
