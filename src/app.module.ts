@@ -14,6 +14,7 @@ import { User } from '@module/user/user.entity'
 import { AuthModule } from '@module/auth/auth.module'
 import { Comment } from '@module/comment/comment.entity'
 import { CommentModule } from '@module/comment/comment.module'
+import { ProcessorModule } from '@/processor/processor.module'
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { CommentModule } from '@module/comment/comment.module'
     CategoryModule,
     CommentModule,
     AuthModule,
+    ProcessorModule,
   ],
   controllers: [AppController],
   providers: [AppService],

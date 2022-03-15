@@ -158,4 +158,12 @@ export class PostService {
     })
     return this.postRepository.save(updated)
   }
+
+  async updateComments(id: string): Promise<Post> {
+    const post = await this.postRepository.findOne(id)
+    const updated = this.postRepository.merge(post, {
+      comments: post.comments + 1,
+    })
+    return this.postRepository.save(updated)
+  }
 }

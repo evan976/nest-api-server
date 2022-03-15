@@ -66,6 +66,10 @@ export class Post {
   likes: number
 
   @ApiProperty()
+  @Column({ type: 'int', default: 0 })
+  comments: number
+
+  @ApiProperty()
   @CreateDateColumn({
     type: 'datetime',
     comment: '创建时间',
