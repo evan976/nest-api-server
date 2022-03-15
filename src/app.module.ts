@@ -12,6 +12,8 @@ import { Category } from '@module/category/category.entity'
 import { CategoryModule } from '@module/category/category.module'
 import { User } from '@module/user/user.entity'
 import { AuthModule } from '@module/auth/auth.module'
+import { Comment } from '@module/comment/comment.entity'
+import { CommentModule } from '@module/comment/comment.module'
 
 @Module({
   imports: [
@@ -24,7 +26,7 @@ import { AuthModule } from '@module/auth/auth.module'
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         type: 'mysql',
-        entities: [User, Tag, Post, Category],
+        entities: [User, Tag, Post, Category, Comment],
         host: configService.get('DB_HOST', 'localhost'),
         port: configService.get<number>('DB_PORT', 3306),
         username: configService.get('DB_USER', 'root'),
@@ -38,6 +40,7 @@ import { AuthModule } from '@module/auth/auth.module'
     TagModule,
     PostModule,
     CategoryModule,
+    CommentModule,
     AuthModule,
   ],
   controllers: [AppController],

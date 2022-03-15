@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { ConfigService } from '@nestjs/config'
 import { Repository } from 'typeorm'
 import { User } from '@module/user/user.entity'
-import { ConfigService } from '@nestjs/config'
 import { PaginateResult, QueryParams } from '@interface/pagination.interface'
 
 @Injectable()
@@ -16,12 +16,12 @@ export class UserService {
     this.createUser({ name, password, role: 'admin' })
       .then(() => {
         console.log(
-          `管理员账户创建成功，用户名：${name}，密码：${password}，请及时登录系统修改默认密码`
+          `管理员账号自动创建成功，用户名：${name}，默认密码：${password}，请尽快修改默认密码`
         )
       })
       .catch(() => {
         console.log(
-          `管理员账户已创建，用户名：${name}，密码：${password}，请及时登录系统修改默认密码`
+          `管理员账号已创建，用户名：${name}，默认密码：${password}，请尽快修改默认密码`
         )
       })
   }

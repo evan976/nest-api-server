@@ -6,7 +6,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm'
 import { ApiProperty } from '@nestjs/swagger'
-import { Author } from '@/interface/app.interface'
 import { CommentState, Weights } from '@/interface/state.interface'
 
 @Entity()
@@ -17,7 +16,15 @@ export class Comment {
 
   @ApiProperty()
   @Column()
-  author: Author
+  name: string
+
+  @ApiProperty()
+  @Column()
+  email: string
+
+  @ApiProperty()
+  @Column()
+  site: string
 
   @ApiProperty()
   @Column({ type: 'mediumtext', default: null })
