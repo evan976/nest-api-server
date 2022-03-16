@@ -5,7 +5,9 @@ import { Tag } from '@module/tag/tag.entity'
 
 @Injectable()
 export class TagService {
-  constructor(@InjectRepository(Tag) private tagRepository: Repository<Tag>) {}
+  constructor(
+    @InjectRepository(Tag) private readonly tagRepository: Repository<Tag>
+  ) {}
 
   async create(tag: Partial<Tag>): Promise<Tag> {
     const { label, value } = tag
@@ -64,14 +66,28 @@ export class TagService {
     return await this.tagRepository.save(updatedTag)
   }
 
-  async remove(id: string): Promise<boolean> {
+  async remove(id: string): Promise<Tag> {
     try {
       const tag = await this.tagRepository.findOne(id)
       if (!tag) {
         throw new HttpException('分类不存在', HttpStatus.NOT_FOUND)
       }
-      await this.tagRepository.remove(tag)
-      return true
+      return await this.tagRepository.remove(tag)
+    } catch (error) {
+      throw new HttpException(
+        '删除失败，可能存在关联文章',
+        HttpStatus.BAD_REQUEST
+      )
+    }
+  }
+
+  async removeMany(ids: Array<string>): Promise<Tag[]> {
+    try {
+      const exist = await this.tagRepository.findByIds(ids)
+      if (!exist.length) {
+        throw new HttpException('标签 id 错误', HttpStatus.NOT_FOUND)
+      }
+      return await this.tagRepository.remove(exist)
     } catch (error) {
       throw new HttpException(
         '删除失败，可能存在关联文章',

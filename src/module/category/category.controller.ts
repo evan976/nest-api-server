@@ -43,7 +43,7 @@ export class CategoryController {
     return this.categoryService.findOne(id)
   }
 
-  @ApiOperation({ summary: '根据 id 更新分类' })
+  @ApiOperation({ summary: '更新分类' })
   @Put(':id')
   @UseGuards(JwtAuthGuard)
   @Role('admin')
@@ -51,11 +51,19 @@ export class CategoryController {
     return this.categoryService.update(id, body)
   }
 
-  @ApiOperation({ summary: '根据 id 删除分类' })
+  @ApiOperation({ summary: '删除分类' })
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @Role('admin')
   remove(@Param('id') id: string) {
     return this.categoryService.remove(id)
+  }
+
+  @ApiOperation({ summary: '批量删除分类' })
+  @UseGuards(JwtAuthGuard)
+  @Role('admin')
+  @Delete()
+  removeMany(@Body('ids') ids: string[]) {
+    return this.categoryService.removeMany(ids)
   }
 }

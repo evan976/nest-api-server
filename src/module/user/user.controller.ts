@@ -2,6 +2,7 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -56,12 +57,8 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Role('admin')
   @Put(':id')
-  async update(
-    @Req() req: Request,
-    @Param() id: string,
-    @Body() body: Partial<User>
-  ) {
-    return await this.userService.update(req.user, id, body)
+  async update(@Param() id: string, @Body() body: Partial<User>) {
+    return await this.userService.update(id, body)
   }
 
   @ApiOperation({ summary: '更新用户密码' })
@@ -71,5 +68,14 @@ export class UserController {
   @Patch(':id')
   async updatePassword(@Param() id: string, @Body() body: Partial<User>) {
     return await this.userService.updatePassword(id, body)
+  }
+
+  @ApiOperation({ summary: '删除用户' })
+  @UseInterceptors(ClassSerializerInterceptor)
+  @UseGuards(JwtAuthGuard)
+  @Role('admin')
+  @Delete(':id')
+  async remove(@Param() id: string) {
+    return this.userService.remove(id)
   }
 }

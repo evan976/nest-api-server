@@ -57,7 +57,7 @@ export class EmailService {
     } else {
       options = {
         ...emailOptions,
-        from: `"evanone.site" <${process.env.EMAIL}>`,
+        from: `"evanone.site" <${this.configService.get('ACCOUNT')}>`,
       }
     }
 

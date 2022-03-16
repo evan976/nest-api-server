@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { ConfigService } from '@nestjs/config'
 import { Repository } from 'typeorm'
 import { Comment } from '@module/comment/comment.entity'
 import { PostService } from '@module/post/post.service'
@@ -13,12 +14,13 @@ export class CommentService {
   constructor(
     private readonly emailService: EmailService,
     private readonly postService: PostService,
+    private readonly configService: ConfigService,
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>
   ) {}
 
   async create(ua: string, body: Partial<Comment>): Promise<Comment> {
-    const { name, email, content, postId } = body
+    const { name, email, content, postId, parentId } = body
     if (!name || !email || !content) {
       throw new HttpException('参数错误', HttpStatus.BAD_REQUEST)
     }
@@ -27,11 +29,11 @@ export class CommentService {
     body.userAgent = text
 
     const newComment = this.commentRepository.create(body)
-    const post = await this.postService.updateComments(postId)
+    const post = await this.postService.updateComments(String(postId), 'create')
 
     if (!body.parentId) {
       this.emailService.sendEmail({
-        to: process.env.EMAIL,
+        to: this.configService.get('ACCOUNT'),
         subject: '博客评论通知',
         html: getNewCommentHtml(
           post.title,
@@ -41,7 +43,7 @@ export class CommentService {
         ),
       })
     } else {
-      const comment = await this.findOne(body.parentId)
+      const comment = await this.findOne(String(parentId))
       this.emailService.sendEmail({
         to: comment.email,
         subject: '评论回复通知',
@@ -57,10 +59,7 @@ export class CommentService {
     return await this.commentRepository.save(newComment)
   }
 
-  async findAll(
-    query: QueryParams,
-    admin = false
-  ): Promise<PaginateResult<Comment>> {
+  async findAll(query: QueryParams): Promise<PaginateResult<Comment>> {
     const { page = 1, pageSize = 12, ...rest } = query
     const [_page, _pageSize] = [page, pageSize].map((v) => Number(v))
 
@@ -69,10 +68,6 @@ export class CommentService {
       .orderBy('comment.createdAt', 'DESC')
       .offset((_page - 1) * _pageSize)
       .limit(_pageSize)
-
-    if (!admin) {
-      queryBuilder.andWhere('comment.status=1')
-    }
 
     if (rest) {
       Object.keys(rest).forEach((key) => {
@@ -90,6 +85,40 @@ export class CommentService {
   }
 
   async findOne(id: string): Promise<Comment> {
-    return await this.commentRepository.findOne(id)
+    const queryBuilder = this.commentRepository
+      .createQueryBuilder('comment')
+      .where('comment.id = :id', { id })
+
+    const comment = await queryBuilder.getOne()
+    if (!comment) {
+      throw new HttpException('评论不存在', HttpStatus.NOT_FOUND)
+    }
+
+    return comment
+  }
+
+  async update(id: string, body: Partial<Comment>): Promise<Comment> {
+    const exist = await this.commentRepository.findOne(id)
+    if (!exist) {
+      throw new HttpException('评论不存在', HttpStatus.NOT_FOUND)
+    }
+    const updatedCategory = this.commentRepository.merge(exist, body)
+    return await this.commentRepository.save(updatedCategory)
+  }
+
+  async remove(id: string): Promise<Comment> {
+    const exist = await this.commentRepository.findOne(id)
+    if (!exist) {
+      throw new HttpException('评论不存在', HttpStatus.NOT_FOUND)
+    }
+    return await this.commentRepository.remove(exist)
+  }
+
+  async removeMany(ids: Array<string>): Promise<Comment[]> {
+    const exist = await this.commentRepository.findByIds(ids)
+    if (!exist.length) {
+      throw new HttpException('评论不存在', HttpStatus.NOT_FOUND)
+    }
+    return await this.commentRepository.remove(exist)
   }
 }

@@ -8,7 +8,8 @@ import { Category } from '@module/category/category.entity'
 @Injectable()
 export class CategoryService {
   constructor(
-    @InjectRepository(Category) private categoryRepository: Repository<Category>
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>
   ) {}
 
   async create(category: Partial<Category>): Promise<Category> {
@@ -72,14 +73,28 @@ export class CategoryService {
     return await this.categoryRepository.save(updatedCategory)
   }
 
-  async remove(id: string): Promise<boolean> {
+  async remove(id: string): Promise<Category> {
     try {
       const category = await this.categoryRepository.findOne(id)
       if (!category) {
         throw new HttpException('分类不存在', HttpStatus.NOT_FOUND)
       }
-      await this.categoryRepository.remove(category)
-      return true
+      return await this.categoryRepository.remove(category)
+    } catch (error) {
+      throw new HttpException(
+        '删除失败，可能存在关联文章',
+        HttpStatus.BAD_REQUEST
+      )
+    }
+  }
+
+  async removeMany(ids: Array<string>): Promise<Category[]> {
+    try {
+      const exist = await this.categoryRepository.findByIds(ids)
+      if (!exist.length) {
+        throw new HttpException('分类 id 错误', HttpStatus.NOT_FOUND)
+      }
+      return await this.categoryRepository.remove(exist)
     } catch (error) {
       throw new HttpException(
         '删除失败，可能存在关联文章',

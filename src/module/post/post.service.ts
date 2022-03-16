@@ -1,8 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { CategoryService } from '@module/category/category.service'
-import { TagService } from '@module/tag/tag.service'
 import { Post } from '@module/post/post.entity'
 import { PaginateResult, QueryParams } from '@interface/pagination.interface'
 
@@ -10,9 +8,7 @@ import { PaginateResult, QueryParams } from '@interface/pagination.interface'
 export class PostService {
   constructor(
     @InjectRepository(Post)
-    private readonly postRepository: Repository<Post>,
-    private readonly categoryService: CategoryService,
-    private readonly tagService: TagService
+    private readonly postRepository: Repository<Post>
   ) {}
 
   async create(body: Partial<Post>): Promise<Post> {
@@ -26,10 +22,7 @@ export class PostService {
     return await this.postRepository.save(post)
   }
 
-  async findAll(
-    query: QueryParams,
-    admin = false
-  ): Promise<PaginateResult<Post>> {
+  async findAll(query: QueryParams): Promise<PaginateResult<Post>> {
     const { page = 1, pageSize = 12, keyword, ...rest } = query
     const [_page, _pageSize] = [page, pageSize].map((v) => Number(v))
 
@@ -47,10 +40,6 @@ export class PostService {
         .orWhere('post.summary LIKE :keyword')
         .orWhere('post.content LIKE :keyword')
         .setParameter('keyword', `%${keyword}%`)
-    }
-
-    if (!admin) {
-      queryBuilder.andWhere('post.status=1')
     }
 
     if (rest) {
@@ -72,16 +61,12 @@ export class PostService {
     return { data, total, page: _page, pageSize: _pageSize, totalPage }
   }
 
-  async findOne(id: string, admin = false): Promise<Post> {
+  async findOne(id: string): Promise<Post> {
     const queryBuilder = this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.category', 'category')
       .leftJoinAndSelect('post.tags', 'tag')
       .where('post.id = :id', { id })
-
-    if (!admin) {
-      queryBuilder.andWhere('post.status=1')
-    }
 
     const post = await queryBuilder.getOne()
 
@@ -96,8 +81,7 @@ export class PostService {
   async findByCateId(
     id: string,
     type: string,
-    query: QueryParams,
-    admin = false
+    query: QueryParams
   ): Promise<PaginateResult<Post>> {
     const [page, pageSize] = [query.page || 1, query.pageSize || 12].map((v) =>
       Number(v)
@@ -110,10 +94,6 @@ export class PostService {
       .orderBy('post.createdAt', 'DESC')
       .offset((page - 1) * pageSize)
       .limit(pageSize)
-
-    if (!admin) {
-      queryBuilder.andWhere('post.status=1')
-    }
 
     const [data, total] = await queryBuilder.getManyAndCount()
 
@@ -143,6 +123,14 @@ export class PostService {
     return await this.postRepository.remove(exist)
   }
 
+  async removeMany(ids: Array<string>): Promise<Post[]> {
+    const exist = await this.postRepository.findByIds(ids)
+    if (!exist.length) {
+      throw new HttpException('文章 id 错误', HttpStatus.NOT_FOUND)
+    }
+    return await this.postRepository.remove(exist)
+  }
+
   async updateViews(id: string): Promise<Post> {
     const post = await this.postRepository.findOne(id)
     const updated = this.postRepository.merge(post, {
@@ -159,10 +147,10 @@ export class PostService {
     return this.postRepository.save(updated)
   }
 
-  async updateComments(id: string): Promise<Post> {
+  async updateComments(id: string, type: 'create' | 'remove'): Promise<Post> {
     const post = await this.postRepository.findOne(id)
     const updated = this.postRepository.merge(post, {
-      comments: post.comments + 1,
+      comments: type === 'create' ? post.comments + 1 : post.comments - 1,
     })
     return this.postRepository.save(updated)
   }

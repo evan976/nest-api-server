@@ -71,20 +71,11 @@ export class UserService {
     return exist
   }
 
-  async update(
-    admin: Partial<User>,
-    id: string,
-    body: Partial<User>
-  ): Promise<User> {
-    if (!admin || admin.role !== 'admin') {
-      throw new HttpException('非管理员暂无权限操作', HttpStatus.FORBIDDEN)
-    }
-
+  async update(id: string, body: Partial<User>): Promise<User> {
     const exist = await this.userRepository.findOne(id)
     if (!exist) {
       throw new HttpException('用户不存在', HttpStatus.BAD_REQUEST)
     }
-    delete body.password
 
     if (body.name && body.name !== exist.name) {
       const existUser = await this.userRepository.findOne({
@@ -120,5 +111,13 @@ export class UserService {
 
     const newUser = this.userRepository.merge(exist, { password: hash })
     return await this.userRepository.save(newUser)
+  }
+
+  async remove(id: string): Promise<User> {
+    const exist = await this.userRepository.findOne(id)
+    if (!exist) {
+      throw new HttpException('用户不存在', HttpStatus.BAD_REQUEST)
+    }
+    return await this.userRepository.remove(exist)
   }
 }

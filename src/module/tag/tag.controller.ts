@@ -56,4 +56,12 @@ export class TagController {
   remove(@Param() id: string) {
     return this.tagService.remove(id)
   }
+
+  @ApiOperation({ summary: '批量删除标签' })
+  @UseGuards(JwtAuthGuard)
+  @Role('admin')
+  @Delete()
+  removeMany(@Body('ids') ids: string[]) {
+    return this.tagService.removeMany(ids)
+  }
 }

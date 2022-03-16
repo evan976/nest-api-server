@@ -23,7 +23,7 @@ export class Comment {
   email: string
 
   @ApiProperty()
-  @Column()
+  @Column({ default: null })
   site: string
 
   @ApiProperty()
@@ -36,26 +36,29 @@ export class Comment {
 
   @ApiProperty()
   @Column()
-  postId: string
+  postId: number
 
   @ApiProperty()
-  @Column()
+  @Column({ default: null })
   url: string
 
   @ApiProperty()
   @Column({ default: null })
-  parentId: string
+  parentId: number
 
   @ApiProperty()
   @Column({ type: 'mediumtext', default: null })
   userAgent: string
 
   @ApiProperty()
-  @Column('simple-enum', { enum: CommentState, default: 1 })
+  @Column('simple-enum', {
+    enum: CommentState,
+    default: CommentState.Pass,
+  })
   status: number
 
   @ApiProperty()
-  @Column('simple-enum', { enum: Weights, default: 1 })
+  @Column('simple-enum', { enum: Weights, default: Weights.Small })
   weight: number
 
   @ApiProperty()

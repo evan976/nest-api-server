@@ -10,9 +10,9 @@ export enum OriginState {
 }
 
 export enum CommentState {
-  Auditing = 0,
-  Published = 1,
-  Recycled = -1,
+  Recycle = -1,
+  Reject = 0,
+  Pass = 1,
 }
 
 export enum Weights {

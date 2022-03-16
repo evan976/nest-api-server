@@ -1,5 +1,5 @@
 import { get } from 'lodash'
-import UAParser from 'ua-parser-js'
+import * as UAParser from 'ua-parser-js'
 
 const keys = [
   'browser.name',
