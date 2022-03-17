@@ -15,6 +15,7 @@ import { AuthModule } from '@module/auth/auth.module'
 import { Comment } from '@module/comment/comment.entity'
 import { CommentModule } from '@module/comment/comment.module'
 import { ProcessorModule } from '@/processor/processor.module'
+import { ConfigModule as OptionModule } from '@module/config/config.module'
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { ProcessorModule } from '@/processor/processor.module'
     CommentModule,
     AuthModule,
     ProcessorModule,
+    OptionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

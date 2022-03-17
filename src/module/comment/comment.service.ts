@@ -111,6 +111,7 @@ export class CommentService {
     if (!exist) {
       throw new HttpException('评论不存在', HttpStatus.NOT_FOUND)
     }
+    await this.postService.updateComments(String(exist.postId), 'remove')
     return await this.commentRepository.remove(exist)
   }
 
