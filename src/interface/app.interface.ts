@@ -13,8 +13,3 @@ export interface PaginateResult<T> {
   pageSize: number
   totalPage: number
 }
-
-export enum PublishState {
-  Publish = 1,
-  Draft = 0
-}

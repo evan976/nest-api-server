@@ -14,7 +14,16 @@ async function bootstrap() {
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: {
-      origin: ['http://localhost', 'http://localhost:4000'],
+      origin: [
+        'http://localhost',
+        'http://localhost:4000',
+        'http://evanone.site',
+        'https://evanone.site',
+        'http://admin.evanone.site',
+        'https://admin.evanone.site',
+        'http://static.evanone.site',
+        'https://static.evanone.site'
+      ],
       credentials: true
     },
     bufferLogs: true,
@@ -45,6 +54,6 @@ async function bootstrap() {
   app.use(bodyParser.json({ limit: '10mb' }))
   app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }))
 
-  await app.listen(8848)
+  await app.listen(8000)
 }
 bootstrap()
