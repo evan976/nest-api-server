@@ -10,13 +10,13 @@ const passportModule = PassportModule.register({ defaultStrategy: 'jwt' })
 
 const jwtModule = JwtModule.register({
   secret: 'Nestpress',
-  signOptions: { expiresIn: '24h' },
+  signOptions: { expiresIn: '24h' }
 })
 
 @Module({
   imports: [UserModule, passportModule, jwtModule],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
-  exports: [passportModule, jwtModule],
+  exports: [passportModule, jwtModule]
 })
 export class AuthModule {}

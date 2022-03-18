@@ -8,13 +8,13 @@ import {
   Put,
   Query,
   Req,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common'
 import { Request } from 'express'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { CommentService } from '@module/comment/comment.service'
 import { Comment } from '@module/comment/comment.entity'
-import { QueryParams } from '@interface/pagination.interface'
+import { QueryParams } from '@interface/app.interface'
 import { Role, RoleGuard } from '@guard/role.guard'
 import { JwtAuthGuard } from '@/guard/jwt-auth.guard'
 

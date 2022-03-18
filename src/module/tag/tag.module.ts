@@ -9,6 +9,6 @@ import { AuthModule } from '@module/auth/auth.module'
   imports: [TypeOrmModule.forFeature([Tag]), AuthModule],
   controllers: [TagController],
   providers: [TagService],
-  exports: [TagService],
+  exports: [TagService]
 })
 export class TagModule {}

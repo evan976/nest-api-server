@@ -4,7 +4,7 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  BeforeInsert,
+  BeforeInsert
 } from 'typeorm'
 import { Exclude } from 'class-transformer'
 import * as bcrypt from 'bcryptjs'
@@ -49,14 +49,14 @@ export class User {
   @CreateDateColumn({
     type: 'datetime',
     comment: '创建时间',
-    name: 'created_at',
+    name: 'created_at'
   })
   createdAt: Date
 
   @UpdateDateColumn({
     type: 'datetime',
     comment: '更新时间',
-    name: 'updated_at',
+    name: 'updated_at'
   })
   updatedAt: Date
 

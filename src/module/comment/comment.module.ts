@@ -12,10 +12,10 @@ import { PostModule } from '@module/post/post.module'
     TypeOrmModule.forFeature([Comment]),
     UserModule,
     PostModule,
-    AuthModule,
+    AuthModule
   ],
   providers: [CommentService],
   controllers: [CommentController],
-  exports: [CommentService],
+  exports: [CommentService]
 })
 export class CommentModule {}

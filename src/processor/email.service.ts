@@ -25,8 +25,8 @@ export class EmailService {
       secure: true,
       auth: {
         user: this.configService.get('ACCOUNT'),
-        pass: this.configService.get('PASSWORD'),
-      },
+        pass: this.configService.get('PASSWORD')
+      }
     })
     this.verifyClient()
   }
@@ -57,7 +57,7 @@ export class EmailService {
     } else {
       options = {
         ...emailOptions,
-        from: `"evanone.site" <${this.configService.get('ACCOUNT')}>`,
+        from: `"evanone.site" <${this.configService.get('ACCOUNT')}>`
       }
     }
 

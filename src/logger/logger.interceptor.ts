@@ -2,7 +2,7 @@ import {
   CallHandler,
   ExecutionContext,
   NestInterceptor,
-  ConsoleLogger,
+  ConsoleLogger
 } from '@nestjs/common'
 import { tap } from 'rxjs/operators'
 

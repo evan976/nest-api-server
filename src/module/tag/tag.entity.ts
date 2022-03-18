@@ -4,7 +4,7 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToMany,
+  ManyToMany
 } from 'typeorm'
 import { Post } from '@module/post/post.entity'
 
@@ -34,14 +34,14 @@ export class Tag {
   @CreateDateColumn({
     type: 'datetime',
     comment: '创建时间',
-    name: 'created_at',
+    name: 'created_at'
   })
   createdAt: Date
 
   @UpdateDateColumn({
     type: 'datetime',
     comment: '更新时间',
-    name: 'updated_at',
+    name: 'updated_at'
   })
   updatedAt: Date
 }

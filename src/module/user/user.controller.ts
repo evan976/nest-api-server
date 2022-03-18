@@ -11,7 +11,7 @@ import {
   Query,
   Req,
   UseGuards,
-  UseInterceptors,
+  UseInterceptors
 } from '@nestjs/common'
 import { Request } from 'express'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
@@ -19,7 +19,7 @@ import { UserService } from '@module/user/user.service'
 import { User } from '@module/user/user.entity'
 import { Role, RoleGuard } from '@guard/role.guard'
 import { JwtAuthGuard } from '@guard/jwt-auth.guard'
-import { QueryParams } from '@interface/pagination.interface'
+import { QueryParams } from '@interface/app.interface'
 
 @ApiTags('用户')
 @ApiBearerAuth()

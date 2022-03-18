@@ -7,10 +7,10 @@ import {
   Post,
   Put,
   Query,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
-import { QueryParams } from '@interface/pagination.interface'
+import { QueryParams } from '@interface/app.interface'
 import { CategoryService } from '@module/category/category.service'
 import { Category } from '@module/category/category.entity'
 import { JwtAuthGuard } from '@guard/jwt-auth.guard'

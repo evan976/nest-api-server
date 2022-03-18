@@ -8,14 +8,14 @@ import {
   Post,
   Put,
   Query,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { PostService } from '@module/post/post.service'
 import { Post as PostEntity } from '@module/post/post.entity'
 import { Role, RoleGuard } from '@guard/role.guard'
 import { JwtAuthGuard } from '@guard/jwt-auth.guard'
-import { QueryParams } from '@interface/pagination.interface'
+import { QueryParams } from '@interface/app.interface'
 
 @ApiTags('文章')
 @ApiBearerAuth()

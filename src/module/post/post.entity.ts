@@ -6,7 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm'
 import { ApiProperty } from '@nestjs/swagger'
 import { Tag } from '@module/tag/tag.entity'
@@ -73,7 +73,7 @@ export class Post {
   @CreateDateColumn({
     type: 'datetime',
     comment: '创建时间',
-    name: 'created_at',
+    name: 'created_at'
   })
   createdAt: Date
 
@@ -81,7 +81,7 @@ export class Post {
   @UpdateDateColumn({
     type: 'datetime',
     comment: '更新时间',
-    name: 'updated_at',
+    name: 'updated_at'
   })
   updatedAt: Date
 }

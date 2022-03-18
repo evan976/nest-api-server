@@ -1,27 +1,36 @@
 import * as url from 'url'
 import * as qiniu from 'qiniu'
 import {
+  Body,
   Controller,
+  Get,
   InternalServerErrorException,
   Post,
+  Put,
   UploadedFile,
   UseGuards,
-  UseInterceptors,
+  UseInterceptors
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FileInterceptor } from '@nestjs/platform-express'
+import { Config } from '@module/config/config.entity'
+import { ConfigService as OptionService } from '@module/config/config.service'
 import { JwtAuthGuard } from '@/guard/jwt-auth.guard'
 import { Role } from '@/guard/role.guard'
-import { ApiOperation } from '@nestjs/swagger'
+import { ApiOperation, ApiTags } from '@nestjs/swagger'
 
+@ApiTags('配置')
 @Controller('config')
 export class ConfigController {
-  constructor(private readonly configServie: ConfigService) {}
+  constructor(
+    private readonly configServie: ConfigService,
+    private readonly optionService: OptionService
+  ) {}
 
-  @ApiOperation({ summary: '图片上传' })
-  @Post('upload')
+  @ApiOperation({ summary: '文件上传' })
   @UseGuards(JwtAuthGuard)
   @Role('admin')
+  @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file) {
     const mac = new qiniu.auth.digest.Mac(
@@ -29,18 +38,17 @@ export class ConfigController {
       this.configServie.get('QINIU_SECRETKEY')
     )
     const putPolicy = new qiniu.rs.PutPolicy({
-      scope: this.configServie.get('QINIU_SCOPE'),
+      scope: this.configServie.get('QINIU_SCOPE')
     })
     const uploadToken = putPolicy.uploadToken(mac)
 
     const formUploader = new qiniu.form_up.FormUploader(
       new qiniu.conf.Config({
-        zone: qiniu.zone.Zone_z2,
+        zone: qiniu.zone.Zone_z2
       })
     )
 
     return new Promise((resolve) => {
-      // eslint-disable-next-line @typescript-eslint/no-this-alias
       const self = this
       formUploader.put(
         uploadToken,
@@ -57,7 +65,7 @@ export class ConfigController {
               url: new url.URL(
                 respBody.key,
                 self.configServie.get('QINIU_HOST')
-              ).href,
+              ).href
             })
           } else {
             console.error(respInfo.statusCode, respBody)
@@ -66,5 +74,19 @@ export class ConfigController {
         }
       )
     })
+  }
+
+  @ApiOperation({ summary: '获取网站配置' })
+  @Get('option')
+  async find() {
+    return this.optionService.find()
+  }
+
+  @ApiOperation({ summary: '更新网站配置' })
+  @UseGuards(JwtAuthGuard)
+  @Role('admin')
+  @Put('option')
+  async update(@Body() body: Partial<Config>) {
+    return this.optionService.update(body)
   }
 }

@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Post } from '@module/post/post.entity'
-import { PaginateResult, QueryParams } from '@interface/pagination.interface'
+import { PaginateResult, QueryParams } from '@interface/app.interface'
 
 @Injectable()
 export class PostService {
@@ -134,7 +134,7 @@ export class PostService {
   async updateViews(id: string): Promise<Post> {
     const post = await this.postRepository.findOne(id)
     const updated = this.postRepository.merge(post, {
-      views: post.views + 1,
+      views: post.views + 1
     })
     return this.postRepository.save(updated)
   }
@@ -142,7 +142,7 @@ export class PostService {
   async updateLikes(id: string, type: 'like' | 'dislike'): Promise<Post> {
     const post = await this.postRepository.findOne(id)
     const updated = this.postRepository.merge(post, {
-      likes: type === 'like' ? post.likes + 1 : post.likes - 1,
+      likes: type === 'like' ? post.likes + 1 : post.likes - 1
     })
     return this.postRepository.save(updated)
   }
@@ -150,7 +150,7 @@ export class PostService {
   async updateComments(id: string, type: 'create' | 'remove'): Promise<Post> {
     const post = await this.postRepository.findOne(id)
     const updated = this.postRepository.merge(post, {
-      comments: type === 'create' ? post.comments + 1 : post.comments - 1,
+      comments: type === 'create' ? post.comments + 1 : post.comments - 1
     })
     return this.postRepository.save(updated)
   }

@@ -1,8 +1,7 @@
-import { PaginateResult } from '@/interface/pagination.interface'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { QueryParams } from '@interface/pagination.interface'
+import { QueryParams, PaginateResult } from '@interface/app.interface'
 import { Category } from '@module/category/category.entity'
 
 @Injectable()

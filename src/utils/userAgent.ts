@@ -10,7 +10,7 @@ const keys = [
   'os.version',
   'device.vendor',
   'device.model',
-  'device.type',
+  'device.type'
 ]
 
 const join = (ua: UAParser.IResult, keys: any[]) =>
@@ -29,8 +29,8 @@ export const parseUserAgent = (userAgent: string) => {
       browser: join(ua, keys.slice(0, 2)),
       engine: join(ua, keys.slice(2, 4)),
       os: join(ua, keys.slice(4, 6)),
-      device: join(ua, keys.slice(6)),
+      device: join(ua, keys.slice(6))
     },
-    text: join(ua, keys),
+    text: join(ua, keys)
   }
 }

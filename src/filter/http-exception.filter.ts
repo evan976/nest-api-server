@@ -4,7 +4,7 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
-  HttpStatus,
+  HttpStatus
 } from '@nestjs/common'
 import { Request, Response } from 'express'
 
@@ -29,7 +29,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: request.url,
       success: false,
-      data: null,
+      data: null
     })
     logger.error(message)
   }

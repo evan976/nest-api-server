@@ -1,9 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ConfigService } from '@nestjs/config'
 import { Repository } from 'typeorm'
 import { User } from '@module/user/user.entity'
-import { PaginateResult, QueryParams } from '@interface/pagination.interface'
+import { PaginateResult, QueryParams } from '@interface/app.interface'
 
 @Injectable()
 export class UserService {
@@ -11,24 +11,23 @@ export class UserService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly configService: ConfigService
   ) {
-    const name = this.configService.get('ADMIN_USER', 'admin')
-    const password = this.configService.get('ADMIN_PASSWORD', 'admin')
+    const logger = new Logger()
+    const name = this.configService.get('ADMIN_USER')
+    const password = this.configService.get('ADMIN_PASSWORD')
     this.createUser({ name, password, role: 'admin' })
       .then(() => {
-        console.log(
-          `管理员账号自动创建成功，用户名：${name}，默认密码：${password}，请尽快修改默认密码`
+        logger.log(
+          `管理员账号自动创建成功，用户名:${name}，默认密码:${password}`
         )
       })
       .catch(() => {
-        console.log(
-          `管理员账号已创建，用户名：${name}，默认密码：${password}，请尽快修改默认密码`
-        )
+        logger.warn(`管理员账号已创建`)
       })
   }
 
   async createUser(user: Partial<User>): Promise<User> {
     const exist = await this.userRepository.findOne({
-      where: { name: user.name },
+      where: { name: user.name }
     })
     if (exist) {
       throw new HttpException('用户已存在', HttpStatus.BAD_REQUEST)
@@ -79,7 +78,7 @@ export class UserService {
 
     if (body.name && body.name !== exist.name) {
       const existUser = await this.userRepository.findOne({
-        where: { name: body.name },
+        where: { name: body.name }
       })
 
       if (existUser) {

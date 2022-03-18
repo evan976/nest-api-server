@@ -14,10 +14,10 @@ import { AuthModule } from '@module/auth/auth.module'
     CategoryModule,
     TagModule,
     UserModule,
-    AuthModule,
+    AuthModule
   ],
   controllers: [PostController],
   providers: [PostService],
-  exports: [PostService],
+  exports: [PostService]
 })
 export class PostModule {}

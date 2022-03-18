@@ -15,10 +15,10 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: {
       origin: ['http://localhost', 'http://localhost:4000'],
-      credentials: true,
+      credentials: true
     },
     bufferLogs: true,
-    logger: logger,
+    logger: logger
   })
 
   app.use(compression())

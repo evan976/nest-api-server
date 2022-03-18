@@ -3,7 +3,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm'
 import { ApiProperty } from '@nestjs/swagger'
 import { CommentState, Weights } from '@/interface/state.interface'
@@ -53,7 +53,7 @@ export class Comment {
   @ApiProperty()
   @Column('simple-enum', {
     enum: CommentState,
-    default: CommentState.Pass,
+    default: CommentState.Pass
   })
   status: number
 
@@ -65,7 +65,7 @@ export class Comment {
   @CreateDateColumn({
     type: 'datetime',
     comment: '创建时间',
-    name: 'created_at',
+    name: 'created_at'
   })
   createdAt: Date
 
@@ -73,7 +73,7 @@ export class Comment {
   @UpdateDateColumn({
     type: 'datetime',
     comment: '更新时间',
-    name: 'updated_at',
+    name: 'updated_at'
   })
   updatedAt: Date
 }

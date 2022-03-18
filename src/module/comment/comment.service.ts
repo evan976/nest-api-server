@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config'
 import { Repository } from 'typeorm'
 import { Comment } from '@module/comment/comment.entity'
 import { PostService } from '@module/post/post.service'
-import { PaginateResult, QueryParams } from '@/interface/pagination.interface'
+import { PaginateResult, QueryParams } from '@/interface/app.interface'
 import { parseUserAgent } from '@/utils/userAgent'
 import { EmailService } from '@/processor/email.service'
 import { getNewCommentHtml, getReplyCommentHtml } from '@/utils/html'
@@ -40,7 +40,7 @@ export class CommentService {
           newComment.content,
           newComment.name,
           newComment.site
-        ),
+        )
       })
     } else {
       const comment = await this.findOne(String(parentId))
@@ -52,7 +52,7 @@ export class CommentService {
           comment.content,
           newComment.content,
           newComment.site
-        ),
+        )
       })
     }
 
