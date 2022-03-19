@@ -1,73 +1,90 @@
+# nest-api-server
+
+RESTful API server application with NestJS & TypeORM
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 说明
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+NestJS 服务端博客项目，为博客系统提供 API 接口服务
 
-## Description
+v2.x 全新升级，采用 NestJS + TypeScript 重构，数据库由 MongoDB 迁移到 MySQL
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+新增 API：评论模块、邮件服务、管理员
 
-## Installation
+接口文档：[docs](https://api.evanone.site/docs/)
 
-```bash
-$ npm install
+原项目地址：[express-api-server](https://github.com/wujihua118/express-api-server)
+
+## API 说明
+
+基本说明
+
+- 接口根地址：http://localhost:8000/v2
+- 服务端已开启 CORS 跨域支持
+- 需要授权的 API ，必须在请求头（headers）中使用 Authorization 字段提供 token 令牌
+- 数据返回格式统一使用 JSON
+
+HTTP 状态码
+
+- 200 成功
+- 400 请求错误（参数、请求体错误）
+- 401 未授权（token 不存在、错误或过期）
+- 403 无权限（非管理员用户）
+- 404 资源不存在（请求路径错误）
+- 500 服务器内部错误
+
+请求方法
+
+- GET 获取（一项或多项）
+- POST 创建
+- PUT 更新
+- PATCH 更新
+- DELETE 删除
+
+接口数据返回
+
+- 成功
+
+```json
+{
+  "code": 0,
+  "message": "success",
+  "data": "Hello World!"
+}
 ```
 
-## Running the app
+- 失败
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+```json
+{
+  "code": 404,
+  "message": "Cannot GET /",
+  "timestamp": "2022-03-19T07:39:45.718Z",
+  "path": "/",
+  "success": false,
+  "data": null
+}
 ```
 
-## Test
+## 构建
+
+请确保本地安装 MySQL
+
+根目录创建 `.env` 文件，配置参考 [.env.production](https://github.com/wujihua118/Nestpress/blob/master/.env.production)
+
+克隆项目到本地，安装依赖，启动开发服务
 
 ```bash
-# unit tests
-$ npm run test
+$ pnpm install
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+$ pnpm run start:dev
 ```
 
-## Support
+## 最后
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+祝折腾愉快～
 
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+欢迎 Star、 Issue
