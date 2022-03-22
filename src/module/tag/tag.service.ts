@@ -14,7 +14,7 @@ export class TagService {
 
     const tags = await this.tagRepository
       .createQueryBuilder('tag')
-      .where('tag.label = :name', { label })
+      .where('tag.label = :label', { label })
       .orWhere('tag.value = :value', { value })
       .getMany()
 
