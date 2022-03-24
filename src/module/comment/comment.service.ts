@@ -1,3 +1,4 @@
+import gravatar from 'gravatar'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ConfigService } from '@nestjs/config'
@@ -27,6 +28,8 @@ export class CommentService {
 
     const { text } = parseUserAgent(ua)
     body.userAgent = text
+
+    body.avatar = gravatar.url(body.email)
 
     const newComment = this.commentRepository.create(body)
     const post = await this.postService.updateComments(String(postId), 'create')

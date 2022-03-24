@@ -24,6 +24,10 @@ export class Comment {
 
   @ApiProperty()
   @Column({ default: null })
+  avatar: string
+
+  @ApiProperty()
+  @Column({ default: null })
   site: string
 
   @ApiProperty()

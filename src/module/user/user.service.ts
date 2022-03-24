@@ -1,3 +1,4 @@
+import gravatar from 'gravatar'
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ConfigService } from '@nestjs/config'
@@ -14,7 +15,8 @@ export class UserService {
     const logger = new Logger()
     const name = this.configService.get('ADMIN_USER')
     const password = this.configService.get('ADMIN_PASSWORD')
-    this.createUser({ name, password, role: 'admin' })
+    const email = this.configService.get('ACCOUNT')
+    this.createUser({ name, password, email, role: 'admin' })
       .then(() => {
         logger.log(
           `管理员账号自动创建成功，用户名:${name}，默认密码:${password}`
@@ -33,6 +35,7 @@ export class UserService {
       throw new HttpException('用户已存在', HttpStatus.BAD_REQUEST)
     }
 
+    user.avatar = gravatar.url(user.email)
     const model = this.userRepository.create(user)
     await this.userRepository.save(model)
     return model
