@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/wujihua118/nest-api-server/compare/v2.1.0...v2.1.1) (2022-03-29)
+
+
+### Bug Fixes
+
+* allow cross domain ([b8a5647](https://github.com/wujihua118/nest-api-server/commit/b8a56475a61967a0a601db9073533aa7ede3224b))
+
 # [2.1.0](https://github.com/wujihua118/nest-api-server/compare/v2.0.1...v2.1.0) (2022-03-24)
 
 
