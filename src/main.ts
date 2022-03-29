@@ -17,6 +17,7 @@ async function bootstrap() {
       origin: [
         'http://localhost',
         'http://localhost:4000',
+        'http://localhost:8080',
         'http://evanone.site',
         'https://evanone.site',
         'http://admin.evanone.site',
