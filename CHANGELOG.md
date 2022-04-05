@@ -1,3 +1,15 @@
+# [2.2.0](https://github.com/wujihua118/nest-api-server/compare/v2.1.1...v2.2.0) (2022-04-05)
+
+
+### Bug Fixes
+
+* optimize query string parameter type definitions ([60e5aa9](https://github.com/wujihua118/nest-api-server/commit/60e5aa9e706917bf07f2273eb6790bf799488b63))
+
+
+### Features
+
+* added wallpaper api ([34a8abe](https://github.com/wujihua118/nest-api-server/commit/34a8abe9b8f9a89677bad6083b2922577c694b41))
+
 ## [2.1.1](https://github.com/wujihua118/nest-api-server/compare/v2.1.0...v2.1.1) (2022-03-29)
 
 
