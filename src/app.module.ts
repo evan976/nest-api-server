@@ -17,6 +17,8 @@ import { CommentModule } from '@module/comment/comment.module'
 import { ProcessorModule } from '@/processor/processor.module'
 import { Config } from '@module/config/config.entity'
 import { ConfigModule as OptionModule } from '@module/config/config.module'
+import { Wallpaper } from '@module/wallpaper/wallpaper.entity'
+import { WallpaperModule } from '@module/wallpaper/wallpaper.module'
 
 @Module({
   imports: [
@@ -29,7 +31,7 @@ import { ConfigModule as OptionModule } from '@module/config/config.module'
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         type: 'mysql',
-        entities: [User, Tag, Post, Category, Comment, Config],
+        entities: [User, Tag, Post, Category, Comment, Config, Wallpaper],
         host: configService.get('DB_HOST'),
         port: configService.get<number>('DB_PORT'),
         username: configService.get('DB_USER'),
@@ -46,7 +48,8 @@ import { ConfigModule as OptionModule } from '@module/config/config.module'
     CommentModule,
     AuthModule,
     ProcessorModule,
-    OptionModule
+    OptionModule,
+    WallpaperModule
   ],
   controllers: [AppController],
   providers: [AppService]

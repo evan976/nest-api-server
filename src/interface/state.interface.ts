@@ -3,6 +3,11 @@ export enum PublishState {
   Draft = 0
 }
 
+export enum OnlineState {
+  Online = 1,
+  Offline = 0
+}
+
 export enum OriginState {
   Original = 0,
   Reprint = 1,
