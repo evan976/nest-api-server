@@ -14,7 +14,6 @@ import { Request } from 'express'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { CommentService } from '@module/comment/comment.service'
 import { Comment } from '@module/comment/comment.entity'
-import { QueryParams } from '@interface/app.interface'
 import { Role, RoleGuard } from '@guard/role.guard'
 import { JwtAuthGuard } from '@/guard/jwt-auth.guard'
 
@@ -34,7 +33,7 @@ export class CommentController {
 
   @ApiOperation({ summary: '获取评论列表' })
   @Get()
-  async findAll(@Query() query: QueryParams) {
+  async findAll(@Query() query: Record<string, string | number>) {
     return this.commentService.findAll(query)
   }
 

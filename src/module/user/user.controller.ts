@@ -19,7 +19,6 @@ import { UserService } from '@module/user/user.service'
 import { User } from '@module/user/user.entity'
 import { Role, RoleGuard } from '@guard/role.guard'
 import { JwtAuthGuard } from '@guard/jwt-auth.guard'
-import { QueryParams } from '@interface/app.interface'
 
 @ApiTags('用户')
 @ApiBearerAuth()
@@ -39,7 +38,7 @@ export class UserController {
   @ApiOperation({ summary: '获取用户列表' })
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
-  async findAll(@Query() query: QueryParams) {
+  async findAll(@Query() query: Record<string, string | number>) {
     return await this.userService.findAll(query)
   }
 

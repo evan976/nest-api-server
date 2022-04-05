@@ -82,6 +82,12 @@ export class ConfigController {
     return this.optionService.find()
   }
 
+  @ApiOperation({ summary: '获取网站数据' })
+  @Get('site/data')
+  async findSiteData() {
+    return this.optionService.findSiteData()
+  }
+
   @ApiOperation({ summary: '更新网站配置' })
   @UseGuards(JwtAuthGuard)
   @Role('admin')

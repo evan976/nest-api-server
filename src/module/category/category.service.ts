@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { QueryParams, PaginateResult } from '@interface/app.interface'
+import { PaginateResult } from '@interface/app.interface'
 import { Category } from '@module/category/category.entity'
 
 @Injectable()
@@ -32,7 +32,9 @@ export class CategoryService {
     return model
   }
 
-  async findAll(query: QueryParams): Promise<PaginateResult<Category>> {
+  async findAll(
+    query: Record<string, string | number>
+  ): Promise<PaginateResult<Category>> {
     const [page, pageSize] = [query.page || 1, query.pageSize || 12].map((v) =>
       Number(v)
     )
@@ -53,6 +55,12 @@ export class CategoryService {
     })
 
     return { data, total, page, pageSize, totalPage }
+  }
+
+  async getCount(): Promise<number> {
+    return await this.categoryRepository
+      .createQueryBuilder('category')
+      .getCount()
   }
 
   async findOne(id: string): Promise<Category> {

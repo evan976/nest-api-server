@@ -2,12 +2,27 @@ import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Config } from '@module/config/config.entity'
+import { PostService } from '@module/post/post.service'
+import { CategoryService } from '@module/category/category.service'
+import { TagService } from '@module/tag/tag.service'
+import { CommentService } from '@module/comment/comment.service'
+
+export interface SiteData {
+  post: number
+  category: number
+  tag: number
+  comment: number
+}
 
 @Injectable()
 export class ConfigService {
   constructor(
     @InjectRepository(Config)
-    private readonly configRepository: Repository<Config>
+    private readonly configRepository: Repository<Config>,
+    private readonly postService: PostService,
+    private readonly categoryService: CategoryService,
+    private readonly tagService: TagService,
+    private readonly commentService: CommentService
   ) {
     const logger = new Logger()
     this.create({ title: 'title' })
@@ -30,6 +45,20 @@ export class ConfigService {
   async find(): Promise<Config> {
     const [config] = await this.configRepository.find()
     return config
+  }
+
+  async findSiteData(): Promise<SiteData> {
+    const post = await this.postService.getCount()
+    const category = await this.categoryService.getCount()
+    const tag = await this.tagService.getCount()
+    const comment = await this.commentService.getCount()
+
+    return {
+      post,
+      category,
+      tag,
+      comment
+    }
   }
 
   async update(body: Partial<Config>): Promise<Config> {

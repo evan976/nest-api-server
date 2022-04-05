@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config'
 import { Repository } from 'typeorm'
 import { Comment } from '@module/comment/comment.entity'
 import { PostService } from '@module/post/post.service'
-import { PaginateResult, QueryParams } from '@/interface/app.interface'
+import { PaginateResult } from '@/interface/app.interface'
 import { parseUserAgent } from '@/utils/userAgent'
 import { EmailService } from '@/processor/email.service'
 import { getNewCommentHtml, getReplyCommentHtml } from '@/utils/html'
@@ -62,7 +62,9 @@ export class CommentService {
     return await this.commentRepository.save(newComment)
   }
 
-  async findAll(query: QueryParams): Promise<PaginateResult<Comment>> {
+  async findAll(
+    query: Record<string, string | number>
+  ): Promise<PaginateResult<Comment>> {
     const { page = 1, pageSize = 12, ...rest } = query
     const [_page, _pageSize] = [page, pageSize].map((v) => Number(v))
 
@@ -124,5 +126,9 @@ export class CommentService {
       throw new HttpException('评论不存在', HttpStatus.NOT_FOUND)
     }
     return await this.commentRepository.remove(exist)
+  }
+
+  async getCount(): Promise<number> {
+    return await this.commentRepository.createQueryBuilder('comment').getCount()
   }
 }

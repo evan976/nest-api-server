@@ -15,7 +15,6 @@ import { PostService } from '@module/post/post.service'
 import { Post as PostEntity } from '@module/post/post.entity'
 import { Role, RoleGuard } from '@guard/role.guard'
 import { JwtAuthGuard } from '@guard/jwt-auth.guard'
-import { QueryParams } from '@interface/app.interface'
 
 @ApiTags('文章')
 @ApiBearerAuth()
@@ -34,7 +33,7 @@ export class PostController {
 
   @ApiOperation({ summary: '获取文章列表' })
   @Get()
-  async findAll(@Query() query: QueryParams) {
+  async findAll(@Query() query: Record<string, string | number>) {
     return this.postService.findAll(query)
   }
 
@@ -46,13 +45,19 @@ export class PostController {
 
   @ApiOperation({ summary: '根据分类 id 获取文章列表' })
   @Get('category/:id')
-  async findByCategoryId(@Param('id') id: string, @Query() query: QueryParams) {
+  async findByCategoryId(
+    @Param('id') id: string,
+    @Query() query: Record<string, string | number>
+  ) {
     return this.postService.findByCateId(id, 'category', query)
   }
 
   @ApiOperation({ summary: '根据标签 id 获取文章列表' })
   @Get('tag/:id')
-  async findByTagId(@Param('id') id: string, @Query() query: QueryParams) {
+  async findByTagId(
+    @Param('id') id: string,
+    @Query() query: Record<string, string | number>
+  ) {
     return this.postService.findByCateId(id, 'tag', query)
   }
 

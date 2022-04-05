@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Post } from '@module/post/post.entity'
-import { PaginateResult, QueryParams } from '@interface/app.interface'
+import { PaginateResult } from '@interface/app.interface'
 
 @Injectable()
 export class PostService {
@@ -22,7 +22,9 @@ export class PostService {
     return await this.postRepository.save(post)
   }
 
-  async findAll(query: QueryParams): Promise<PaginateResult<Post>> {
+  async findAll(
+    query: Record<string, string | number>
+  ): Promise<PaginateResult<Post>> {
     const { page = 1, pageSize = 12, keyword, ...rest } = query
     const [_page, _pageSize] = [page, pageSize].map((v) => Number(v))
 
@@ -81,7 +83,7 @@ export class PostService {
   async findByCateId(
     id: string,
     type: string,
-    query: QueryParams
+    query: Record<string, string | number>
   ): Promise<PaginateResult<Post>> {
     const [page, pageSize] = [query.page || 1, query.pageSize || 12].map((v) =>
       Number(v)
@@ -153,5 +155,9 @@ export class PostService {
       comments: type === 'create' ? post.comments + 1 : post.comments - 1
     })
     return this.postRepository.save(updated)
+  }
+
+  async getCount(): Promise<number> {
+    return await this.postRepository.createQueryBuilder('post').getCount()
   }
 }

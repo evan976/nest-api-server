@@ -10,7 +10,6 @@ import {
   UseGuards
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
-import { QueryParams } from '@interface/app.interface'
 import { CategoryService } from '@module/category/category.service'
 import { Category } from '@module/category/category.entity'
 import { JwtAuthGuard } from '@guard/jwt-auth.guard'
@@ -33,7 +32,7 @@ export class CategoryController {
 
   @ApiOperation({ summary: '获取分类列表' })
   @Get()
-  findAll(@Query() query: QueryParams) {
+  findAll(@Query() query: Record<string, string | number>) {
     return this.categoryService.findAll(query)
   }
 

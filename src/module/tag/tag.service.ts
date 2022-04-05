@@ -95,4 +95,8 @@ export class TagService {
       )
     }
   }
+
+  async getCount(): Promise<number> {
+    return this.tagRepository.createQueryBuilder('tag').getCount()
+  }
 }

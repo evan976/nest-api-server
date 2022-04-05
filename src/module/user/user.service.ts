@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { ConfigService } from '@nestjs/config'
 import { Repository } from 'typeorm'
 import { User } from '@module/user/user.entity'
-import { PaginateResult, QueryParams } from '@interface/app.interface'
+import { PaginateResult } from '@interface/app.interface'
 
 @Injectable()
 export class UserService {
@@ -35,13 +35,15 @@ export class UserService {
       throw new HttpException('用户已存在', HttpStatus.BAD_REQUEST)
     }
 
-    user.avatar = gravatar.url(user.email)
+    user.avatar = gravatar?.url(user.email)
     const model = this.userRepository.create(user)
     await this.userRepository.save(model)
     return model
   }
 
-  async findAll(query: QueryParams): Promise<PaginateResult<User>> {
+  async findAll(
+    query: Record<string, string | number>
+  ): Promise<PaginateResult<User>> {
     const [page, pageSize] = [query.page || 1, query.pageSize || 12].map((v) =>
       Number(v)
     )
