@@ -1,3 +1,15 @@
+# [3.0.0](https://github.com/wujihua118/nest-api-server/compare/v2.2.0...v3.0.0) (2022-04-06)
+
+
+### Bug Fixes
+
+* cannot create wallpaper & add default avatar url ([0b8396b](https://github.com/wujihua118/nest-api-server/commit/0b8396bbc8ff866c11d3e33cc7c362d8ca4524a3))
+
+
+### BREAKING CHANGES
+
+* wallpaper
+
 # [2.2.0](https://github.com/wujihua118/nest-api-server/compare/v2.1.1...v2.2.0) (2022-04-05)
 
 
