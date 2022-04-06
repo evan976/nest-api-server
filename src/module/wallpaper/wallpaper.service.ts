@@ -14,8 +14,15 @@ export class WallpaperService {
   async create(wallpaper: Partial<Wallpaper>): Promise<Wallpaper> {
     const { name, url } = wallpaper
 
-    if (name || url)
+    const wallpapers = await this.wallpaperRepository
+      .createQueryBuilder('wallpaper')
+      .where('wallpaper.name = :name', { name })
+      .orWhere('wallpaper.url = :url', { url })
+      .getMany()
+
+    if (wallpapers.length) {
       throw new HttpException('资源已存在', HttpStatus.BAD_REQUEST)
+    }
 
     const model = this.wallpaperRepository.create(wallpaper)
     await this.wallpaperRepository.save(model)

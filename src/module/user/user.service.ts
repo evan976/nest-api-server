@@ -35,7 +35,9 @@ export class UserService {
       throw new HttpException('用户已存在', HttpStatus.BAD_REQUEST)
     }
 
-    user.avatar = gravatar?.url(user.email)
+    const avatarUrl =
+      gravatar?.url(user.email) || this.configService.get('DEFAULT_AVATAR')
+    user.avatar = avatarUrl
     const model = this.userRepository.create(user)
     await this.userRepository.save(model)
     return model
