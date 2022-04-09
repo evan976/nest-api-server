@@ -10,17 +10,17 @@ export class TagService {
   ) {}
 
   async create(tag: Partial<Tag>): Promise<Tag> {
-    const { label, value } = tag
+    const { name, slug } = tag
 
     const tags = await this.tagRepository
       .createQueryBuilder('tag')
-      .where('tag.label = :label', { label })
-      .orWhere('tag.value = :value', { value })
+      .where('tag.name = :name', { name })
+      .orWhere('tag.slug = :slug', { slug })
       .getMany()
 
     if (tags.length) {
       throw new HttpException(
-        `名称 ${label} 或别名 ${value} 的标签已存在`,
+        `名称 ${name} 或别名 ${slug} 的标签已存在`,
         HttpStatus.BAD_REQUEST
       )
     }

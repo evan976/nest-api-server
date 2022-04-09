@@ -71,8 +71,8 @@ export class CommentService {
     const queryBuilder = this.commentRepository
       .createQueryBuilder('comment')
       .orderBy('comment.createdAt', 'DESC')
-      .offset((_page - 1) * _pageSize)
-      .limit(_pageSize)
+      .skip((_page - 1) * _pageSize)
+      .take(_pageSize)
 
     if (rest) {
       Object.keys(rest).forEach((key) => {

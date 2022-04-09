@@ -39,8 +39,8 @@ export class WallpaperService {
     const [data, total] = await this.wallpaperRepository
       .createQueryBuilder('wallpaper')
       .orderBy('wallpaper.createdAt', 'DESC')
-      .offset((page - 1) * pageSize)
-      .limit(pageSize)
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
       .getManyAndCount()
 
     const totalPage = Math.ceil(total / pageSize) || 1

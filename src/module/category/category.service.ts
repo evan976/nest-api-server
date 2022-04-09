@@ -12,7 +12,7 @@ export class CategoryService {
   ) {}
 
   async create(category: Partial<Category>): Promise<Category> {
-    const { slug, name } = category
+    const { name, slug } = category
 
     const categories = await this.categoryRepository
       .createQueryBuilder('category')
@@ -43,8 +43,8 @@ export class CategoryService {
       .createQueryBuilder('category')
       .leftJoinAndSelect('category.posts', 'posts')
       .orderBy('category.createdAt', 'DESC')
-      .offset((page - 1) * pageSize)
-      .limit(pageSize)
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
       .getManyAndCount()
 
     const totalPage = Math.ceil(total / pageSize) || 1

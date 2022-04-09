@@ -3,12 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Post } from '@module/post/post.entity'
 import { PaginateResult } from '@interface/app.interface'
+import { TagService } from '@module/tag/tag.service'
+import { CategoryService } from '@module/category/category.service'
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Post)
-    private readonly postRepository: Repository<Post>
+    private readonly postRepository: Repository<Post>,
+    private readonly tagService: TagService,
+    private readonly categoryService: CategoryService
   ) {}
 
   async create(body: Partial<Post>): Promise<Post> {
@@ -18,7 +22,20 @@ export class PostService {
       throw new HttpException('文章标题已存在', HttpStatus.BAD_REQUEST)
     }
 
-    const post = this.postRepository.create(body)
+    const { tags, category } = body
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const existTags = await this.tagService.findByIds(('' + tags).split(','))
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const existCategory = await this.categoryService.findOne(category)
+
+    const post = this.postRepository.create({
+      ...body,
+      category: existCategory,
+      tags: existTags
+    })
     return await this.postRepository.save(post)
   }
 
@@ -33,8 +50,8 @@ export class PostService {
       .leftJoinAndSelect('post.tags', 'tag')
       .leftJoinAndSelect('post.category', 'category')
       .orderBy('post.createdAt', 'DESC')
-      .offset((_page - 1) * _pageSize)
-      .limit(_pageSize)
+      .skip((_page - 1) * _pageSize)
+      .take(_pageSize)
 
     if (keyword) {
       queryBuilder
@@ -67,7 +84,7 @@ export class PostService {
     const queryBuilder = this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.category', 'category')
-      .leftJoinAndSelect('post.tags', 'tag')
+      .leftJoinAndSelect('post.tags', 'tags')
       .where('post.id = :id', { id })
 
     const post = await queryBuilder.getOne()
@@ -94,8 +111,8 @@ export class PostService {
       .leftJoinAndSelect('post.category', 'category')
       .where(`${type}.id = :id`, { id })
       .orderBy('post.createdAt', 'DESC')
-      .offset((page - 1) * pageSize)
-      .limit(pageSize)
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
 
     const [data, total] = await queryBuilder.getManyAndCount()
 
@@ -113,7 +130,33 @@ export class PostService {
     if (!exist) {
       throw new HttpException('文章不存在', HttpStatus.NOT_FOUND)
     }
-    const post = this.postRepository.merge(exist, body)
+    // eslint-disable-next-line prefer-const
+    let { tags, category } = body
+
+    if (tags) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      tags = await this.tagService.findByIds(('' + tags).split(','))
+    }
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const existCategory = await this.categoryService.findOne(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      category
+    )
+
+    const newArticle = {
+      ...body,
+      views: exist.views,
+      category: existCategory
+    }
+
+    if (tags) {
+      Object.assign(newArticle, { tags })
+    }
+    const post = this.postRepository.merge(exist, newArticle)
     return await this.postRepository.save(post)
   }
 

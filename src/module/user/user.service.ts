@@ -53,8 +53,8 @@ export class UserService {
     const [data, total] = await this.userRepository
       .createQueryBuilder('user')
       .orderBy('user.createdAt', 'ASC')
-      .offset((page - 1) * pageSize)
-      .limit(pageSize)
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
       .getManyAndCount()
 
     const totalPage = Math.ceil(total / pageSize) || 1

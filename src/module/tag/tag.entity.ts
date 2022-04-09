@@ -14,10 +14,10 @@ export class Tag {
   id: number
 
   @Column()
-  label: string
+  name: string
 
   @Column()
-  value: string
+  slug: string
 
   @Column({ default: 'blue' })
   color: string
