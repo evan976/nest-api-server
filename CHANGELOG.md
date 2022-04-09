@@ -1,14 +1,10 @@
-# [3.0.0](https://github.com/wujihua118/nest-api-server/compare/v2.2.1...v3.0.0) (2022-04-09)
+# [2.2.2](https://github.com/wujihua118/nest-api-server/compare/v2.2.1...v2.2.2) (2022-04-09)
 
 
 ### Bug Fixes
 
 * pagination ([88a7a76](https://github.com/wujihua118/nest-api-server/commit/88a7a765ef7a88abdeca45fa742aa5c81098bb7c))
 
-
-### BREAKING CHANGES
-
-* wallpaper
 
 # [2.2.1](https://github.com/wujihua118/nest-api-server/compare/v2.2.0...v2.2.1) (2022-04-06)
 
