@@ -1,3 +1,10 @@
+## [2.2.4](https://github.com/wujihua118/nest-api-server/compare/v2.2.3...v2.2.4) (2022-06-07)
+
+
+### Bug Fixes
+
+* github ci/cd ([204f1fb](https://github.com/wujihua118/nest-api-server/commit/204f1fb03f808f75e41e004d5beb23fd3e0c712b))
+
 ## [2.2.3](https://github.com/wujihua118/nest-api-server/compare/v2.2.2...v2.2.3) (2022-06-07)
 
 

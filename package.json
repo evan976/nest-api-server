@@ -1,6 +1,6 @@
 {
   "name": "nest-api-server",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "RESTful api server application with NestJS & TypeORM",
   "author": "Evan",
   "private": true,
