@@ -1,4 +1,4 @@
-import gravatar from 'gravatar'
+import * as gravatar from 'gravatar'
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ConfigService } from '@nestjs/config'
@@ -35,8 +35,7 @@ export class UserService {
       throw new HttpException('用户已存在', HttpStatus.BAD_REQUEST)
     }
 
-    const avatarUrl =
-      gravatar?.url(user.email) || this.configService.get('DEFAULT_AVATAR')
+    const avatarUrl = gravatar.url(user.email)
     user.avatar = avatarUrl
     const model = this.userRepository.create(user)
     await this.userRepository.save(model)

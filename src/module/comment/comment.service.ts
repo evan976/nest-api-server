@@ -1,4 +1,4 @@
-import gravatar from 'gravatar'
+import * as gravatar from 'gravatar'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ConfigService } from '@nestjs/config'
@@ -9,6 +9,7 @@ import { PaginateResult } from '@/interface/app.interface'
 import { parseUserAgent } from '@/utils/userAgent'
 import { EmailService } from '@/processor/email.service'
 import { getNewCommentHtml, getReplyCommentHtml } from '@/utils/html'
+import { parseIp } from '@/utils/ip'
 
 @Injectable()
 export class CommentService {
@@ -20,15 +21,18 @@ export class CommentService {
     private readonly commentRepository: Repository<Comment>
   ) {}
 
-  async create(ua: string, body: Partial<Comment>): Promise<Comment> {
+  async create(ua: string, ip: string, body: Partial<Comment>): Promise<Comment> {
     const { name, email, content, postId, parentId } = body
     if (!name || !email || !content) {
       throw new HttpException('参数错误', HttpStatus.BAD_REQUEST)
     }
 
-    const { text } = parseUserAgent(ua)
+    const { text, data } = parseUserAgent(ua)
     body.userAgent = text
-
+    body.browser = data.browser
+    body.os = data.os
+    body.ip = ip
+    body.address = parseIp(ip)
     body.avatar = gravatar.url(body.email)
 
     const newComment = this.commentRepository.create(body)

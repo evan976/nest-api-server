@@ -8,7 +8,7 @@ export const getNewCommentHtml = (
     <div style="color: #40485B; font-size: 14px; background-color: #f8f8f8;">
       <div style="width: 100%; max-width: 600px; padding: 20px; margin: 0 auto;">
         <div style="text-align: center;margin-bottom: 20px;">
-          <img src="https://evanone.site/_nuxt/assets/images/logo.svg" height="30" alt="Logo black">
+          <img src="https://static.evanone.site/1634980227946" height="30" alt="Logo black">
         </div>
         <div style="background: #fff; border: 1px solid #E3E9ED; margin-bottom: 10px;">
           <div style="font-size: 18px; line-height: 30px; padding: 10px 20px; background: #fcfcfc; border-bottom: 1px solid #E3E9ED;">博客评论通知</div>
@@ -40,7 +40,7 @@ export const getReplyCommentHtml = (
     <div style="color: #40485B; font-size: 14px; background-color: #f8f8f8;">
       <div style="width: 100%; max-width: 600px; padding: 20px; margin: 0 auto;">
         <div style="text-align: center;margin-bottom: 20px;">
-          <img src="https://evanone.site/_nuxt/assets/images/logo.svg" height="30" alt="Logo black">
+          <img src="https://static.evanone.site/1634980227946" height="30" alt="Logo black">
         </div>
         <div style="background: #fff; border: 1px solid #E3E9ED; margin-bottom: 10px;">
           <div style="font-size: 18px; line-height: 30px; padding: 10px 20px; background: #fcfcfc; border-bottom: 1px solid #E3E9ED;">博客回复通知</div>

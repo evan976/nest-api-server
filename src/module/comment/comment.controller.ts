@@ -16,6 +16,7 @@ import { CommentService } from '@module/comment/comment.service'
 import { Comment } from '@module/comment/comment.entity'
 import { Role, RoleGuard } from '@guard/role.guard'
 import { JwtAuthGuard } from '@/guard/jwt-auth.guard'
+import { getClientIP } from '@/utils/ip'
 
 @ApiTags('评论')
 @ApiBearerAuth()
@@ -28,7 +29,8 @@ export class CommentController {
   @Post()
   async create(@Req() req: Request, @Body() body: Partial<Comment>) {
     const userAgent = req.headers['user-agent']
-    return this.commentService.create(userAgent, body)
+    const ip = getClientIP(req)
+    return this.commentService.create(userAgent, ip, body)
   }
 
   @ApiOperation({ summary: '获取评论列表' })

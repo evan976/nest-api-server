@@ -55,6 +55,30 @@ export class Comment {
   userAgent: string
 
   @ApiProperty()
+  @Column({ default: null })
+  browser: string
+
+  @ApiProperty()
+  @Column({ default: null })
+  os: string
+
+  @ApiProperty()
+  @Column({ default: null })
+  ip: string
+
+  @ApiProperty()
+  @Column({ default: null })
+  address: string
+
+  @ApiProperty()
+  @Column({ default: null })
+  replyUserName: string
+
+  @ApiProperty()
+  @Column({ default: null })
+  replyUserEmail: string
+
+  @ApiProperty()
   @Column('simple-enum', {
     enum: CommentState,
     default: CommentState.Pass

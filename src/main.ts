@@ -17,6 +17,7 @@ async function bootstrap() {
       origin: [
         'http://localhost',
         'http://localhost:4000',
+        'http://localhost:3000',
         'http://localhost:8080',
         'http://evanone.site',
         'https://evanone.site',
@@ -32,7 +33,7 @@ async function bootstrap() {
   })
 
   app.use(compression())
-  app.setGlobalPrefix('api')
+  app.setGlobalPrefix('v2')
 
   const config = new DocumentBuilder()
     .setTitle('NestPress')
@@ -57,4 +58,5 @@ async function bootstrap() {
 
   await app.listen(8000)
 }
+
 bootstrap()

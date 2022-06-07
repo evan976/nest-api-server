@@ -22,6 +22,12 @@ export class Config {
   @Column({ default: null })
   copyright: string
 
+  @Column({ default: null })
+  icp: string
+
+  @Column({ default: null })
+  icpUrl: string
+
   @Column({ type: 'simple-array', default: null })
   keywords: Array<string>
 
