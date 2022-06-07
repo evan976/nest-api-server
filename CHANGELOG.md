@@ -1,3 +1,10 @@
+## [2.2.3](https://github.com/wujihua118/nest-api-server/compare/v2.2.2...v2.2.3) (2022-06-07)
+
+
+### Bug Fixes
+
+* gravatar can't generate avatar, comments add config add new field ([db99e0a](https://github.com/wujihua118/nest-api-server/commit/db99e0a899c87cacf7e11f694fb258c8aa262a15))
+
 # [2.2.2](https://github.com/wujihua118/nest-api-server/compare/v2.2.1...v2.2.2) (2022-04-09)
 
 
