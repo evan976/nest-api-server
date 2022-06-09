@@ -1,3 +1,10 @@
+## [2.2.7](https://github.com/wujihua118/nest-api-server/compare/v2.2.6...v2.2.7) (2022-06-09)
+
+
+### Bug Fixes
+
+* ip parsing error ([78b9516](https://github.com/wujihua118/nest-api-server/commit/78b9516745a3daea1b1a53df005c113ae5c82836))
+
 ## [2.2.6](https://github.com/wujihua118/nest-api-server/compare/v2.2.5...v2.2.6) (2022-06-09)
 
 
