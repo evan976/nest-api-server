@@ -39,7 +39,7 @@ export class Comment {
   html: string
 
   @ApiProperty()
-  @Column()
+  @Column({ default: null })
   postId: number
 
   @ApiProperty()

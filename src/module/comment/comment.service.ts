@@ -10,6 +10,7 @@ import { parseUserAgent } from '@/utils/userAgent'
 import { EmailService } from '@/processor/email.service'
 import { getNewCommentHtml, getReplyCommentHtml } from '@/utils/html'
 import { parseIp } from '@/utils/ip'
+import { Post } from '../post/post.entity'
 
 @Injectable()
 export class CommentService {
@@ -21,7 +22,11 @@ export class CommentService {
     private readonly commentRepository: Repository<Comment>
   ) {}
 
-  async create(ua: string, ip: string, body: Partial<Comment>): Promise<Comment> {
+  async create(
+    ua: string,
+    ip: string,
+    body: Partial<Comment>
+  ): Promise<Comment> {
     const { name, email, content, postId, parentId } = body
     if (!name || !email || !content) {
       throw new HttpException('参数错误', HttpStatus.BAD_REQUEST)
@@ -36,14 +41,19 @@ export class CommentService {
     body.avatar = gravatar.url(body.email)
 
     const newComment = this.commentRepository.create(body)
-    const post = await this.postService.updateComments(String(postId), 'create')
+
+    let post: Post
+
+    if (postId) {
+      post = await this.postService.updateComments(String(postId), 'create')
+    }
 
     if (!body.parentId) {
       this.emailService.sendEmail({
         to: this.configService.get('ACCOUNT'),
         subject: '博客评论通知',
         html: getNewCommentHtml(
-          post.title,
+          post?.title || '',
           newComment.content,
           newComment.name,
           newComment.site
