@@ -1,3 +1,10 @@
+## [2.2.6](https://github.com/wujihua118/nest-api-server/compare/v2.2.5...v2.2.6) (2022-06-09)
+
+
+### Bug Fixes
+
+* iP resolution error ([3b44cfe](https://github.com/wujihua118/nest-api-server/commit/3b44cfe8700b4fa01618fa8bb0a93ce70f043d67))
+
 ## [2.2.5](https://github.com/wujihua118/nest-api-server/compare/v2.2.4...v2.2.5) (2022-06-09)
 
 
