@@ -1,3 +1,10 @@
+## [2.2.5](https://github.com/wujihua118/nest-api-server/compare/v2.2.4...v2.2.5) (2022-06-09)
+
+
+### Bug Fixes
+
+* can't add comments ([27ee7de](https://github.com/wujihua118/nest-api-server/commit/27ee7de20863699326286f66236b22c8edd8f77e))
+
 ## [2.2.4](https://github.com/wujihua118/nest-api-server/compare/v2.2.3...v2.2.4) (2022-06-07)
 
 
