@@ -37,8 +37,13 @@ export class CommentService {
     body.browser = data.browser
     body.os = data.os
     body.ip = ip
-    body.address = parseIp(ip)
     body.avatar = gravatar.url(body.email)
+
+    const location = await parseIp(ip)
+
+    if (location) {
+      body.address = `${location.Province} ${location.City}` || '未知'
+    }
 
     const newComment = this.commentRepository.create(body)
 
