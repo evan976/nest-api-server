@@ -10,7 +10,6 @@ import {
   Req,
   UseGuards
 } from '@nestjs/common'
-import { Request } from 'express'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { CommentService } from '@module/comment/comment.service'
 import { Comment } from '@module/comment/comment.entity'
@@ -27,7 +26,7 @@ export class CommentController {
 
   @ApiOperation({ summary: '新增评论' })
   @Post()
-  async create(@Req() req: Request, @Body() body: Partial<Comment>) {
+  async create(@Req() req, @Body() body: Partial<Comment>) {
     const userAgent = req.headers['user-agent']
     const ip = getClientIP(req)
     return this.commentService.create(userAgent, ip, body)
