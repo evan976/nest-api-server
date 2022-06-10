@@ -1,3 +1,10 @@
+## [2.2.8](https://github.com/wujihua118/nest-api-server/compare/v2.2.7...v2.2.8) (2022-06-10)
+
+
+### Bug Fixes
+
+* mail format ([d0e4e47](https://github.com/wujihua118/nest-api-server/commit/d0e4e473ecd65e6227db3a1bd79f865927505e11))
+
 ## [2.2.7](https://github.com/wujihua118/nest-api-server/compare/v2.2.6...v2.2.7) (2022-06-09)
 
 
