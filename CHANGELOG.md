@@ -1,3 +1,10 @@
+## [2.2.9](https://github.com/wujihua118/nest-api-server/compare/v2.2.8...v2.2.9) (2022-06-12)
+
+
+### Bug Fixes
+
+* ts type definition ([561d13e](https://github.com/wujihua118/nest-api-server/commit/561d13ebe86e7987458c1787d50677554af8fc26))
+
 ## [2.2.8](https://github.com/wujihua118/nest-api-server/compare/v2.2.7...v2.2.8) (2022-06-10)
 
 
