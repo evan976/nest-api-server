@@ -37,11 +37,20 @@ export class User {
   @Exclude()
   relNewPassword: string
 
-  @Column({ length: 50, default: null })
+  @Column({ default: null })
   avatar: string
 
   @Column({ length: 50, default: null })
   email: string
+
+  @Column({ default: null })
+  position: string
+
+  @Column({ default: null })
+  address: string
+
+  @Column({ default: null })
+  siteUrl: string
 
   @Column('simple-enum', { enum: ['admin', 'user'], default: 'user' })
   role: string

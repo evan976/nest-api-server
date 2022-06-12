@@ -65,7 +65,7 @@ export class UserService {
     return this.userRepository.findOne(id)
   }
 
-  async login(user: Partial<User>): Promise<User> {
+  async login(user: Pick<User, 'name' | 'password'>): Promise<User> {
     const { name, password } = user
     const exist = await this.userRepository.findOne({ where: { name } })
 
@@ -96,7 +96,10 @@ export class UserService {
     return this.userRepository.save(model)
   }
 
-  async updatePassword(id: string, body: Partial<User>): Promise<User> {
+  async updatePassword(
+    id: string,
+    body: Pick<User, 'password' | 'newPassword' | 'relNewPassword'>
+  ): Promise<User> {
     const exist = await this.userRepository.findOne(id)
     const { password, newPassword, relNewPassword } = body
 

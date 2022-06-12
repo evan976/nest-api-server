@@ -19,6 +19,9 @@ export class Config {
   @Column({ type: 'mediumtext', default: null })
   summary: string
 
+  @Column({ type: 'mediumtext', default: null })
+  description: string
+
   @Column({ default: null })
   copyright: string
 

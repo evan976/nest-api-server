@@ -21,7 +21,7 @@ export class AuthService {
     return user
   }
 
-  async login(user: Partial<User>): Promise<Token> {
+  async login(user: Pick<User, 'name' | 'password'>): Promise<Token> {
     const data = await this.userService.login(user)
     const token = this.generateToken({
       id: data.id,

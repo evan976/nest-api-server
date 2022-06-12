@@ -65,7 +65,10 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Role('admin')
   @Patch(':id')
-  async updatePassword(@Param() id: string, @Body() body: Partial<User>) {
+  async updatePassword(
+    @Param() id: string,
+    @Body() body: Pick<User, 'password' | 'newPassword' | 'relNewPassword'>
+  ) {
     return await this.userService.updatePassword(id, body)
   }
 

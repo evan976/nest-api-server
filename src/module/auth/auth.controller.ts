@@ -9,7 +9,7 @@ export class AuthController {
 
   @ApiOperation({ summary: '用户登录' })
   @Post('login')
-  async login(@Body() body: Partial<User>) {
+  async login(@Body() body: Pick<User, 'name' | 'password'>) {
     return await this.authService.login(body)
   }
 }
