@@ -1,3 +1,10 @@
+## [2.2.11](https://github.com/wujihua118/nest-api-server/compare/v2.2.10...v2.2.11) (2022-06-13)
+
+
+### Bug Fixes
+
+* admin avatar for comment ([581d575](https://github.com/wujihua118/nest-api-server/commit/581d575baf676aa68dec4b2a5c7737bd61b3e66e))
+
 ## [2.2.10](https://github.com/wujihua118/nest-api-server/compare/v2.2.9...v2.2.10) (2022-06-13)
 
 
