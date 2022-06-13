@@ -16,11 +16,12 @@ import { FileInterceptor } from '@nestjs/platform-express'
 import { Config } from '@module/config/config.entity'
 import { ConfigService as OptionService } from '@module/config/config.service'
 import { JwtAuthGuard } from '@/guard/jwt-auth.guard'
-import { Role } from '@/guard/role.guard'
+import { Role, RoleGuard } from '@/guard/role.guard'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 
 @ApiTags('配置')
 @Controller('config')
+@UseGuards(RoleGuard)
 export class ConfigController {
   constructor(
     private readonly configServie: ConfigService,
