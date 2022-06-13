@@ -1,3 +1,10 @@
+## [2.2.10](https://github.com/wujihua118/nest-api-server/compare/v2.2.9...v2.2.10) (2022-06-13)
+
+
+### Bug Fixes
+
+* the postService updateComments method ([d499171](https://github.com/wujihua118/nest-api-server/commit/d4991711aa5dad0e6d480b894d2c0be27025ccf3))
+
 ## [2.2.9](https://github.com/wujihua118/nest-api-server/compare/v2.2.8...v2.2.9) (2022-06-12)
 
 
