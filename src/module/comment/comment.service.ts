@@ -37,7 +37,10 @@ export class CommentService {
     body.browser = data.browser
     body.os = data.os
     body.ip = ip
-    body.avatar = gravatar.url(body.email)
+    
+    if (!body.avatar) {
+      body.avatar = gravatar.url(body.email)
+    }
 
     const address = parseIp(ip)
 
