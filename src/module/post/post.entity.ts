@@ -12,12 +12,17 @@ import { ApiProperty } from '@nestjs/swagger'
 import { Tag } from '@module/tag/tag.entity'
 import { Category } from '@module/category/category.entity'
 import { OriginState, PublishState, Weights } from '@interface/state.interface'
+import { createUUID } from '@/utils/uuid'
 
 @Entity()
 export class Post {
   @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number
+
+  @ApiProperty()
+  @Column({ default: createUUID()() })
+  articleId: string
 
   @ApiProperty()
   @Column()

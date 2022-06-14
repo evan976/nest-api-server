@@ -40,6 +40,9 @@ export class PostController {
   @ApiOperation({ summary: '获取文章详情' })
   @Get(':id')
   async findOne(@Param('id') id: string) {
+    if (id.length >= 18) {
+      return this.postService.findOneByArticleId(id)
+    }
     return this.postService.findOne(id)
   }
 

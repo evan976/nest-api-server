@@ -92,8 +92,25 @@ export class PostService {
     if (!post) {
       throw new HttpException('文章不存在', HttpStatus.NOT_FOUND)
     }
+    return post
+  }
 
-    await this.updateViews(id)
+  // 前端获取文章详情
+  async findOneByArticleId(articleId: string): Promise<Post> {
+    const queryBuilder = this.postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.tags', 'tags')
+      .leftJoinAndSelect('post.category', 'category')
+      .where('post.articleId = :articleId', { articleId })
+
+    const post = await queryBuilder.getOne()
+
+    if (!post) {
+      throw new HttpException('文章不存在', HttpStatus.NOT_FOUND)
+    }
+
+    // 每次访问文章，访问量+1
+    await this.updateViews(post.articleId)
     return post
   }
 
@@ -177,7 +194,7 @@ export class PostService {
   }
 
   async updateViews(id: string): Promise<Post> {
-    const post = await this.postRepository.findOne(id)
+    const post = await this.postRepository.findOne({ where: { articleId: id } })
     const updated = this.postRepository.merge(post, {
       views: post.views + 1
     })
