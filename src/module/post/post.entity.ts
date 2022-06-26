@@ -21,7 +21,7 @@ export class Post {
   id: number
 
   @ApiProperty()
-  @Column({ default: createUUID()() })
+  @Column({ default: null })
   articleId: string
 
   @ApiProperty()

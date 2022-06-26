@@ -5,6 +5,7 @@ import { Post } from '@module/post/post.entity'
 import { PaginateResult } from '@interface/app.interface'
 import { TagService } from '@module/tag/tag.service'
 import { CategoryService } from '@module/category/category.service'
+import { createUUID } from '@/utils/uuid'
 
 @Injectable()
 export class PostService {
@@ -34,7 +35,8 @@ export class PostService {
     const post = this.postRepository.create({
       ...body,
       category: existCategory,
-      tags: existTags
+      tags: existTags,
+      articleId: createUUID()()
     })
     return await this.postRepository.save(post)
   }
