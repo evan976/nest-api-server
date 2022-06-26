@@ -1,3 +1,10 @@
+## [2.2.13](https://github.com/wujihua118/nest-api-server/compare/v2.2.12...v2.2.13) (2022-06-26)
+
+
+### Bug Fixes
+
+* cannot create article uuid ([2abbfb8](https://github.com/wujihua118/nest-api-server/commit/2abbfb86038c24d6ea0b4ed715fdd1077dce798b))
+
 ## [2.2.12](https://github.com/wujihua118/nest-api-server/compare/v2.2.11...v2.2.12) (2022-06-14)
 
 
