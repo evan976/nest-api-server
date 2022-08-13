@@ -1,3 +1,10 @@
+# [2.3.0](https://github.com/wujihua118/nest-api-server/compare/v2.2.13...v2.3.0) (2022-08-13)
+
+
+### Features
+
+* add new api articles and tags ([8bdfe7f](https://github.com/wujihua118/nest-api-server/commit/8bdfe7fd2558227cf8711ef0af9a3a27bd504263))
+
 ## [2.2.13](https://github.com/wujihua118/nest-api-server/compare/v2.2.12...v2.2.13) (2022-06-26)
 
 
