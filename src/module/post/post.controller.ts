@@ -64,6 +64,14 @@ export class PostController {
     return this.postService.findByCateId(id, 'tag', query)
   }
 
+  // @ApiOperation({ summary: '根据标签名称获取文章列表' })
+  // @Get('tags')
+  // async findByTagName(
+  //   @Query() query: Record<string, string | number>
+  // ) {
+  //   return this.postService.findByTagName(query)
+  // }
+
   @ApiOperation({ summary: '更新文章' })
   @UseGuards(JwtAuthGuard)
   @Role('admin')

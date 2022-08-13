@@ -31,22 +31,31 @@ export class TagService {
   }
 
   async findAll(): Promise<Tag[]> {
-    const tags = await this.tagRepository
+
+    const data = await this.tagRepository
       .createQueryBuilder('tag')
-      .orderBy('tag.createdAt', 'DESC')
       .leftJoinAndSelect('tag.posts', 'posts')
+      .orderBy('tag.createdAt', 'DESC')
       .getMany()
 
-    tags.forEach((t) => {
+    data.forEach((t) => {
       Object.assign(t, { postCount: t.posts.length })
       delete t.posts
     })
 
-    return tags
+    return data
   }
 
   async findOne(id: string): Promise<Tag> {
     const tag = await this.tagRepository.findOne(id)
+    if (!tag) {
+      throw new HttpException('标签不存在', HttpStatus.NOT_FOUND)
+    }
+    return tag
+  }
+
+  async findBySlug(slug: string): Promise<Tag> {
+    const tag = await this.tagRepository.findOne({ slug })
     if (!tag) {
       throw new HttpException('标签不存在', HttpStatus.NOT_FOUND)
     }

@@ -41,6 +41,12 @@ export class TagController {
     return this.tagService.findOne(id)
   }
 
+  @ApiOperation({ summary: '根据标签别名获取标签详情' })
+  @Get('slug/:slug')
+  findBySlug(@Param('slug') slug: string) {
+    return this.tagService.findBySlug(slug)
+  }
+
   @ApiOperation({ summary: '更新标签' })
   @UseGuards(JwtAuthGuard)
   @Role('admin')

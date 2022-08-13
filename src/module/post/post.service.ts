@@ -44,7 +44,7 @@ export class PostService {
   async findAll(
     query: Record<string, string | number>
   ): Promise<PaginateResult<Post>> {
-    const { page = 1, pageSize = 12, keyword, ...rest } = query
+    const { page = 1, pageSize = 12, keyword, tagSlug, categorySlug, ...rest } = query
     const [_page, _pageSize] = [page, pageSize].map((v) => Number(v))
 
     const queryBuilder = this.postRepository
@@ -54,6 +54,14 @@ export class PostService {
       .orderBy('post.createdAt', 'DESC')
       .skip((_page - 1) * _pageSize)
       .take(_pageSize)
+
+    if (tagSlug) {
+      queryBuilder.where('tag.slug = :tagSlug', { tagSlug })
+    }
+
+    if (categorySlug) {
+      queryBuilder.where('category.slug = :categorySlug', { categorySlug })
+    }
 
     if (keyword) {
       queryBuilder
