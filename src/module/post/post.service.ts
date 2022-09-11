@@ -44,7 +44,14 @@ export class PostService {
   async findAll(
     query: Record<string, string | number>
   ): Promise<PaginateResult<Post>> {
-    const { page = 1, pageSize = 12, keyword, tagSlug, categorySlug, ...rest } = query
+    const {
+      page = 1,
+      pageSize = 12,
+      keyword,
+      tagSlug,
+      categorySlug,
+      ...rest
+    } = query
     const [_page, _pageSize] = [page, pageSize].map((v) => Number(v))
 
     const queryBuilder = this.postRepository
@@ -120,8 +127,9 @@ export class PostService {
     }
 
     // 每次访问文章，访问量+1
-    await this.updateViews(post.articleId)
-    return post
+    const updatePost = await this.updateViews(post.articleId)
+    console.log(updatePost.views)
+    return updatePost
   }
 
   async findByCateId(
@@ -208,6 +216,7 @@ export class PostService {
     const updated = this.postRepository.merge(post, {
       views: post.views + 1
     })
+    console.log('updated', updated.views)
     return this.postRepository.save(updated)
   }
 

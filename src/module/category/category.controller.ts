@@ -42,6 +42,12 @@ export class CategoryController {
     return this.categoryService.findOne(id)
   }
 
+  @ApiOperation({ summary: '根据分类别名获取指定分类' })
+  @Get('slug/:slug')
+  findByCategorySlug(@Param('slug') slug: string) {
+    return this.categoryService.findByCategorySlug(slug)
+  }
+
   @ApiOperation({ summary: '更新分类' })
   @Put(':id')
   @UseGuards(JwtAuthGuard)
