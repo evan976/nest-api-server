@@ -19,6 +19,7 @@ async function bootstrap() {
         'http://localhost:4000',
         'http://localhost:3000',
         'http://localhost:8080',
+        'http://127.0.0.1:8080',
         'http://evanone.site',
         'https://evanone.site',
         'http://admin.evanone.site',

@@ -71,6 +71,18 @@ export class CategoryService {
     return category
   }
 
+  async findByCategorySlug(slug: string): Promise<Category> {
+    const category = await this.categoryRepository
+      .createQueryBuilder('category')
+      .where('category.slug = :slug', { slug })
+      .getOne()
+
+    if (!category) {
+      throw new HttpException('分类不存在', HttpStatus.NOT_FOUND)
+    }
+    return category
+  }
+
   async update(id: string, body: Partial<Category>): Promise<Category> {
     const category = await this.categoryRepository.findOne(id)
     if (!category) {
