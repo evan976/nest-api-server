@@ -37,7 +37,7 @@ export class CommentService {
     body.browser = data.browser
     body.os = data.os
     body.ip = ip
-    
+
     if (!body.avatar) {
       body.avatar = gravatar.url(body.email)
     }
@@ -87,14 +87,24 @@ export class CommentService {
   async findAll(
     query: Record<string, string | number>
   ): Promise<PaginateResult<Comment>> {
-    const { page = 1, pageSize = 12, ...rest } = query
-    const [_page, _pageSize] = [page, pageSize].map((v) => Number(v))
+    const { page = 1, pageSize = 12, status, ...rest } = query
 
     const queryBuilder = this.commentRepository
       .createQueryBuilder('comment')
+      .where('comment.parentId is NULL')
       .orderBy('comment.createdAt', 'DESC')
-      .skip((_page - 1) * _pageSize)
-      .take(_pageSize)
+
+    const subQuery = this.commentRepository
+      .createQueryBuilder('comment')
+      .where('comment.parentId=:parentId')
+
+    queryBuilder.skip((+page - 1) * +pageSize)
+    queryBuilder.take(+pageSize)
+
+    if (status) {
+      queryBuilder.andWhere('comment.status = :status', { status })
+      subQuery.andWhere('comment.status = :status', { status })
+    }
 
     if (rest) {
       Object.keys(rest).forEach((key) => {
@@ -106,9 +116,16 @@ export class CommentService {
 
     const [data, total] = await queryBuilder.getManyAndCount()
 
-    const totalPage = Math.ceil(total / _pageSize) || 1
+    for (const item of data) {
+      const subComments = await subQuery
+        .setParameter('parentId', item.id)
+        .getMany()
+      Object.assign(item, { replys: subComments })
+    }
 
-    return { data, total, page: _page, pageSize: _pageSize, totalPage }
+    const totalPage = Math.ceil(total / +pageSize) || 1
+
+    return { data, total, page: +page, pageSize: +pageSize, totalPage }
   }
 
   async findOne(id: string): Promise<Comment> {

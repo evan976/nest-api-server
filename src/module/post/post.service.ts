@@ -116,20 +116,21 @@ export class PostService {
   async findOneByArticleId(articleId: string): Promise<Post> {
     const queryBuilder = this.postRepository
       .createQueryBuilder('post')
-      .leftJoinAndSelect('post.tags', 'tags')
       .leftJoinAndSelect('post.category', 'category')
+      .leftJoinAndSelect('post.tags', 'tags')
       .where('post.articleId = :articleId', { articleId })
 
     const post = await queryBuilder.getOne()
+
+    console.log(post)
 
     if (!post) {
       throw new HttpException('文章不存在', HttpStatus.NOT_FOUND)
     }
 
     // 每次访问文章，访问量+1
-    const updatePost = await this.updateViews(post.articleId)
-    console.log(updatePost.views)
-    return updatePost
+    await this.updateViews(post.articleId)
+    return post
   }
 
   async findByCateId(
@@ -211,13 +212,12 @@ export class PostService {
     return await this.postRepository.remove(exist)
   }
 
-  async updateViews(id: string): Promise<Post> {
+  async updateViews(id: string) {
     const post = await this.postRepository.findOne({ where: { articleId: id } })
     const updated = this.postRepository.merge(post, {
       views: post.views + 1
     })
-    console.log('updated', updated.views)
-    return this.postRepository.save(updated)
+    await this.postRepository.save(updated)
   }
 
   async updateLikes(id: string, type: 'like' | 'dislike'): Promise<Post> {

@@ -79,9 +79,13 @@ export class Comment {
   replyUserEmail: string
 
   @ApiProperty()
+  @Column({ default: null })
+  replyUserSite: string
+
+  @ApiProperty()
   @Column('simple-enum', {
     enum: CommentState,
-    default: CommentState.Pass
+    default: CommentState.Review
   })
   status: number
 
