@@ -16,7 +16,7 @@ export enum OriginState {
 
 export enum CommentState {
   Recycle = -1,
-  Reject = 0,
+  Review = 0,
   Pass = 1
 }
 

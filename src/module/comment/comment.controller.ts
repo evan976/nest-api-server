@@ -16,6 +16,7 @@ import { Comment } from '@module/comment/comment.entity'
 import { Role, RoleGuard } from '@guard/role.guard'
 import { JwtAuthGuard } from '@/guard/jwt-auth.guard'
 import { getClientIP } from '@/utils/ip'
+import type { Request } from 'express'
 
 @ApiTags('评论')
 @ApiBearerAuth()
@@ -26,7 +27,7 @@ export class CommentController {
 
   @ApiOperation({ summary: '新增评论' })
   @Post()
-  async create(@Req() req, @Body() body: Partial<Comment>) {
+  async create(@Req() req: Request, @Body() body: Partial<Comment>) {
     const userAgent = req.headers['user-agent']
     const ip = getClientIP(req)
     return this.commentService.create(userAgent, ip, body)
