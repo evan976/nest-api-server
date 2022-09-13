@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { TagService } from '@module/tag/tag.service'
-import { Tag } from '@module/tag/tag.entity'
+import { TagEntity } from '@module/tag/tag.entity'
 import { Role, RoleGuard } from '@guard/role.guard'
 import { JwtAuthGuard } from '@guard/jwt-auth.guard'
 
@@ -25,7 +25,7 @@ export class TagController {
   @UseGuards(JwtAuthGuard)
   @Role('admin')
   @Post()
-  create(@Body() body: Partial<Tag>) {
+  create(@Body() body: Partial<TagEntity>) {
     return this.tagService.create(body)
   }
 
@@ -51,7 +51,7 @@ export class TagController {
   @UseGuards(JwtAuthGuard)
   @Role('admin')
   @Put(':id')
-  update(@Param() id: string, @Body() body: Partial<Tag>) {
+  update(@Param() id: string, @Body() body: Partial<TagEntity>) {
     return this.tagService.update(id, body)
   }
 

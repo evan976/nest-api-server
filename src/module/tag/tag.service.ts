@@ -1,15 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { Tag } from '@module/tag/tag.entity'
+import { TagEntity } from '@module/tag/tag.entity'
 
 @Injectable()
 export class TagService {
   constructor(
-    @InjectRepository(Tag) private readonly tagRepository: Repository<Tag>
+    @InjectRepository(TagEntity)
+    private readonly tagRepository: Repository<TagEntity>
   ) {}
 
-  async create(tag: Partial<Tag>): Promise<Tag> {
+  async create(tag: Partial<TagEntity>): Promise<TagEntity> {
     const { name, slug } = tag
 
     const tags = await this.tagRepository
@@ -25,28 +26,27 @@ export class TagService {
       )
     }
 
-    const model = this.tagRepository.create(tag)
-    await this.tagRepository.save(model)
-    return model
+    const data = this.tagRepository.create(tag)
+    await this.tagRepository.save(data)
+    return data
   }
 
-  async findAll(): Promise<Tag[]> {
-
+  async findAll() {
     const data = await this.tagRepository
       .createQueryBuilder('tag')
-      .leftJoinAndSelect('tag.posts', 'posts')
-      .orderBy('tag.createdAt', 'DESC')
+      .leftJoinAndSelect('tag.articles', 'articles')
+      .orderBy('tag.created_at', 'DESC')
       .getMany()
 
     data.forEach((t) => {
-      Object.assign(t, { postCount: t.posts.length })
-      delete t.posts
+      Object.assign(t, { article_count: t.articles.length })
+      delete t.articles
     })
 
     return data
   }
 
-  async findOne(id: string): Promise<Tag> {
+  async findOne(id: string) {
     const tag = await this.tagRepository.findOne(id)
     if (!tag) {
       throw new HttpException('标签不存在', HttpStatus.NOT_FOUND)
@@ -54,7 +54,7 @@ export class TagService {
     return tag
   }
 
-  async findBySlug(slug: string): Promise<Tag> {
+  async findBySlug(slug: string) {
     const tag = await this.tagRepository.findOne({ slug })
     if (!tag) {
       throw new HttpException('标签不存在', HttpStatus.NOT_FOUND)
@@ -62,11 +62,11 @@ export class TagService {
     return tag
   }
 
-  async findByIds(ids: string[]): Promise<Tag[]> {
+  async findByIds(ids: string[]) {
     return this.tagRepository.findByIds(ids)
   }
 
-  async update(id: string, body: Partial<Tag>): Promise<Tag> {
+  async update(id: string, body: Partial<TagEntity>) {
     const tag = await this.tagRepository.findOne(id)
     if (!tag) {
       throw new HttpException('标签不存在', HttpStatus.NOT_FOUND)
@@ -75,7 +75,7 @@ export class TagService {
     return await this.tagRepository.save(updatedTag)
   }
 
-  async remove(id: string): Promise<Tag> {
+  async remove(id: string) {
     try {
       const tag = await this.tagRepository.findOne(id)
       if (!tag) {
@@ -90,7 +90,7 @@ export class TagService {
     }
   }
 
-  async removeMany(ids: Array<string>): Promise<Tag[]> {
+  async removeMany(ids: Array<string>) {
     try {
       const exist = await this.tagRepository.findByIds(ids)
       if (!exist.length) {

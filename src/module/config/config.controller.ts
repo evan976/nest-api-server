@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { Config } from '@module/config/config.entity'
+import { ConfigEntity } from '@module/config/config.entity'
 import { ConfigService as OptionService } from '@module/config/config.service'
 import { JwtAuthGuard } from '@/guard/jwt-auth.guard'
 import { Role, RoleGuard } from '@/guard/role.guard'
@@ -93,7 +93,7 @@ export class ConfigController {
   @UseGuards(JwtAuthGuard)
   @Role('admin')
   @Put('option')
-  async update(@Body() body: Partial<Config>) {
+  async update(@Body() body: Partial<ConfigEntity>) {
     return this.optionService.update(body)
   }
 }

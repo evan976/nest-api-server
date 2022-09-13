@@ -1,28 +1,17 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  BeforeInsert
-} from 'typeorm'
+import { Entity, Column, BeforeInsert } from 'typeorm'
 import { Exclude } from 'class-transformer'
 import * as bcrypt from 'bcryptjs'
+import { BaseEntity } from '@/utils/entity'
 
-@Entity()
-export class User {
-  // compare password
+@Entity({ name: 'user' })
+export class UserEntity extends BaseEntity {
   static async comparePassword(password: string, newPassword: string) {
     return bcrypt.compareSync(password, newPassword)
   }
 
-  // encrypt password
   static encryptPassword(password: string) {
     return bcrypt.hashSync(password, 10)
   }
-
-  @PrimaryGeneratedColumn()
-  id: number
 
   @Column({ length: 50 })
   name: string
@@ -32,10 +21,10 @@ export class User {
   password: string
 
   @Exclude()
-  newPassword: string
+  new_password: string
 
   @Exclude()
-  relNewPassword: string
+  rel_new_password: string
 
   @Column({ default: null })
   avatar: string
@@ -50,26 +39,11 @@ export class User {
   address: string
 
   @Column({ default: null })
-  siteUrl: string
+  site_url: string
 
   @Column('simple-enum', { enum: ['admin', 'user'], default: 'user' })
   role: string
 
-  @CreateDateColumn({
-    type: 'datetime',
-    comment: '创建时间',
-    name: 'created_at'
-  })
-  createdAt: Date
-
-  @UpdateDateColumn({
-    type: 'datetime',
-    comment: '更新时间',
-    name: 'updated_at'
-  })
-  updatedAt: Date
-
-  // encrypt the password before inserting data
   @BeforeInsert()
   encrypt() {
     this.password = bcrypt.hashSync(this.password, 10)
