@@ -19,9 +19,3 @@ export enum CommentState {
   Review = 0,
   Pass = 1
 }
-
-export enum Weights {
-  Large = 3,
-  Medium = 2,
-  Small = 1
-}

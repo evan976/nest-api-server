@@ -29,7 +29,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: request.url,
       success: false,
-      data: null
+      result: null
     })
     logger.error(message)
   }

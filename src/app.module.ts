@@ -3,22 +3,20 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { AppController } from '@/app.controller'
 import { AppService } from '@/app.service'
-import { Tag } from '@module/tag/tag.entity'
+import { TagEntity } from '@module/tag/tag.entity'
 import { TagModule } from '@module/tag/tag.module'
-import { Post } from '@module/post/post.entity'
-import { PostModule } from '@module/post/post.module'
+import { ArticleEntity } from '@/module/article/article.entity'
+import { PostModule } from '@/module/article/article.module'
 import { parseEnv } from '@/app.env'
-import { Category } from '@module/category/category.entity'
+import { CategoryEntity } from '@module/category/category.entity'
 import { CategoryModule } from '@module/category/category.module'
-import { User } from '@module/user/user.entity'
+import { UserEntity } from '@module/user/user.entity'
 import { AuthModule } from '@module/auth/auth.module'
-import { Comment } from '@module/comment/comment.entity'
+import { CommentEntity } from '@module/comment/comment.entity'
 import { CommentModule } from '@module/comment/comment.module'
 import { ProcessorModule } from '@/processor/processor.module'
-import { Config } from '@module/config/config.entity'
+import { ConfigEntity } from '@module/config/config.entity'
 import { ConfigModule as OptionModule } from '@module/config/config.module'
-import { Wallpaper } from '@module/wallpaper/wallpaper.entity'
-import { WallpaperModule } from '@module/wallpaper/wallpaper.module'
 
 @Module({
   imports: [
@@ -31,7 +29,14 @@ import { WallpaperModule } from '@module/wallpaper/wallpaper.module'
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         type: 'mysql',
-        entities: [User, Tag, Post, Category, Comment, Config, Wallpaper],
+        entities: [
+          UserEntity,
+          TagEntity,
+          ArticleEntity,
+          CategoryEntity,
+          CommentEntity,
+          ConfigEntity
+        ],
         host: configService.get('DB_HOST'),
         port: configService.get<number>('DB_PORT'),
         username: configService.get('DB_USER'),
@@ -48,8 +53,7 @@ import { WallpaperModule } from '@module/wallpaper/wallpaper.module'
     CommentModule,
     AuthModule,
     ProcessorModule,
-    OptionModule,
-    WallpaperModule
+    OptionModule
   ],
   controllers: [AppController],
   providers: [AppService]
