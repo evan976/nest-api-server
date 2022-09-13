@@ -1,19 +1,10 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn
-} from 'typeorm'
+import { Entity, Column } from 'typeorm'
 import { ApiProperty } from '@nestjs/swagger'
-import { CommentState, Weights } from '@/interface/state.interface'
+import { CommentState } from '@/interface/state.interface'
+import { BaseEntity } from '@/utils/entity'
 
-@Entity()
-export class Comment {
-  @ApiProperty()
-  @PrimaryGeneratedColumn()
-  id: number
-
+@Entity({ name: 'comment' })
+export class CommentEntity extends BaseEntity {
   @ApiProperty()
   @Column()
   name: string
@@ -35,24 +26,12 @@ export class Comment {
   content: string
 
   @ApiProperty()
-  @Column({ type: 'mediumtext', default: null })
-  html: string
+  @Column({ default: null })
+  article_id: number
 
   @ApiProperty()
   @Column({ default: null })
-  postId: number
-
-  @ApiProperty()
-  @Column({ default: null })
-  url: string
-
-  @ApiProperty()
-  @Column({ default: null })
-  parentId: number
-
-  @ApiProperty()
-  @Column({ type: 'mediumtext', default: null })
-  userAgent: string
+  parent_id: number
 
   @ApiProperty()
   @Column({ default: null })
@@ -72,15 +51,15 @@ export class Comment {
 
   @ApiProperty()
   @Column({ default: null })
-  replyUserName: string
+  reply_user_name: string
 
   @ApiProperty()
   @Column({ default: null })
-  replyUserEmail: string
+  reply_user_email: string
 
   @ApiProperty()
   @Column({ default: null })
-  replyUserSite: string
+  reply_user_site: string
 
   @ApiProperty()
   @Column('simple-enum', {
@@ -88,24 +67,4 @@ export class Comment {
     default: CommentState.Review
   })
   status: number
-
-  @ApiProperty()
-  @Column('simple-enum', { enum: Weights, default: Weights.Small })
-  weight: number
-
-  @ApiProperty()
-  @CreateDateColumn({
-    type: 'datetime',
-    comment: '创建时间',
-    name: 'created_at'
-  })
-  createdAt: Date
-
-  @ApiProperty()
-  @UpdateDateColumn({
-    type: 'datetime',
-    comment: '更新时间',
-    name: 'updated_at'
-  })
-  updatedAt: Date
 }

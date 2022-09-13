@@ -1,25 +1,16 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ManyToMany
-} from 'typeorm'
-import { Post } from '@module/post/post.entity'
+import { Entity, Column, ManyToMany } from 'typeorm'
+import { ArticleEntity } from '@/module/article/article.entity'
+import { BaseEntity } from '@/utils/entity'
 
-@Entity()
-export class Tag {
-  @PrimaryGeneratedColumn()
-  id: number
-
+@Entity({ name: 'tag' })
+export class TagEntity extends BaseEntity {
   @Column()
   name: string
 
   @Column()
   slug: string
 
-  @Column({ default: 'blue' })
+  @Column({ default: '#165DFF' })
   color: string
 
   @Column({ default: null })
@@ -28,20 +19,6 @@ export class Tag {
   @Column({ default: null })
   background: string
 
-  @ManyToMany(() => Post, (post) => post.tags)
-  posts: Array<Post>
-
-  @CreateDateColumn({
-    type: 'datetime',
-    comment: '创建时间',
-    name: 'created_at'
-  })
-  createdAt: Date
-
-  @UpdateDateColumn({
-    type: 'datetime',
-    comment: '更新时间',
-    name: 'updated_at'
-  })
-  updatedAt: Date
+  @ManyToMany(() => ArticleEntity, (article) => article.tags)
+  articles: Array<ArticleEntity>
 }

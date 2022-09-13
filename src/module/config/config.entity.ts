@@ -1,20 +1,13 @@
-import {
-  Entity,
-  Column,
-  UpdateDateColumn,
-  PrimaryGeneratedColumn
-} from 'typeorm'
+import { BaseEntity } from '@/utils/entity'
+import { Entity, Column } from 'typeorm'
 
-@Entity()
-export class Config {
-  @PrimaryGeneratedColumn()
-  id: number
-
+@Entity({ name: 'config' })
+export class ConfigEntity extends BaseEntity {
   @Column({ default: null })
   title: string
 
   @Column({ default: null })
-  subTitle: string
+  sub_title: string
 
   @Column({ type: 'mediumtext', default: null })
   summary: string
@@ -29,7 +22,7 @@ export class Config {
   icp: string
 
   @Column({ default: null })
-  icpUrl: string
+  icp_url: string
 
   @Column({ type: 'simple-array', default: null })
   keywords: Array<string>
@@ -41,8 +34,5 @@ export class Config {
   favicon: string
 
   @Column({ default: null })
-  siteUrl: string
-
-  @UpdateDateColumn({ type: 'datetime', name: 'updated_at' })
-  updatedAt: Date
+  site_url: string
 }

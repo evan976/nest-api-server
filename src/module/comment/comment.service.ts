@@ -3,37 +3,31 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ConfigService } from '@nestjs/config'
 import { Repository } from 'typeorm'
-import { Comment } from '@module/comment/comment.entity'
-import { PostService } from '@module/post/post.service'
-import { PaginateResult } from '@/interface/app.interface'
+import { CommentEntity } from '@module/comment/comment.entity'
+import { ArticleService } from '@/module/article/article.service'
 import { parseUserAgent } from '@/utils/userAgent'
 import { EmailService } from '@/processor/email.service'
 import { getNewCommentHtml, getReplyCommentHtml } from '@/utils/html'
 import { parseIp } from '@/utils/ip'
-import { Post } from '../post/post.entity'
+import { ArticleEntity } from '../article/article.entity'
 
 @Injectable()
 export class CommentService {
   constructor(
     private readonly emailService: EmailService,
-    private readonly postService: PostService,
+    private readonly articleService: ArticleService,
     private readonly configService: ConfigService,
-    @InjectRepository(Comment)
-    private readonly commentRepository: Repository<Comment>
+    @InjectRepository(CommentEntity)
+    private readonly commentRepository: Repository<CommentEntity>
   ) {}
 
-  async create(
-    ua: string,
-    ip: string,
-    body: Partial<Comment>
-  ): Promise<Comment> {
-    const { name, email, content, postId, parentId } = body
+  async create(ua: string, ip: string, body: Partial<CommentEntity>) {
+    const { name, email, content, article_id, parent_id } = body
     if (!name || !email || !content) {
       throw new HttpException('参数错误', HttpStatus.BAD_REQUEST)
     }
 
-    const { text, data } = parseUserAgent(ua)
-    body.userAgent = text
+    const { data } = parseUserAgent(ua)
     body.browser = data.browser
     body.os = data.os
     body.ip = ip
@@ -50,13 +44,16 @@ export class CommentService {
 
     const newComment = this.commentRepository.create(body)
 
-    let post: Post
+    let post: ArticleEntity
 
-    if (postId) {
-      post = await this.postService.updateComments(String(postId), 'create')
+    if (article_id) {
+      post = await this.articleService.updateComments(
+        String(article_id),
+        'create'
+      )
     }
 
-    if (!body.parentId) {
+    if (!body.parent_id) {
       this.emailService.sendEmail({
         to: this.configService.get('ACCOUNT'),
         subject: '博客评论通知',
@@ -68,7 +65,7 @@ export class CommentService {
         )
       })
     } else {
-      const comment = await this.findOne(String(parentId))
+      const comment = await this.findOne(String(parent_id))
       this.emailService.sendEmail({
         to: comment.email,
         subject: '评论回复通知',
@@ -84,22 +81,20 @@ export class CommentService {
     return await this.commentRepository.save(newComment)
   }
 
-  async findAll(
-    query: Record<string, string | number>
-  ): Promise<PaginateResult<Comment>> {
-    const { page = 1, pageSize = 12, status, ...rest } = query
+  async findAll(params: Record<string, string | number>) {
+    const { page = 1, page_size = 12, status, ...rest } = params
 
     const queryBuilder = this.commentRepository
       .createQueryBuilder('comment')
-      .where('comment.parentId is NULL')
-      .orderBy('comment.createdAt', 'DESC')
+      .where('comment.parent_id is NULL')
+      .orderBy('comment.created_at', 'DESC')
 
     const subQuery = this.commentRepository
       .createQueryBuilder('comment')
-      .where('comment.parentId=:parentId')
+      .where('comment.parent_id=:parent_id')
 
-    queryBuilder.skip((+page - 1) * +pageSize)
-    queryBuilder.take(+pageSize)
+    queryBuilder.skip((+page - 1) * +page_size)
+    queryBuilder.take(+page_size)
 
     if (status) {
       queryBuilder.andWhere('comment.status = :status', { status })
@@ -118,17 +113,17 @@ export class CommentService {
 
     for (const item of data) {
       const subComments = await subQuery
-        .setParameter('parentId', item.id)
+        .setParameter('parent_id', item.id)
         .getMany()
       Object.assign(item, { replys: subComments })
     }
 
-    const totalPage = Math.ceil(total / +pageSize) || 1
+    const total_page = Math.ceil(total / +page_size) || 1
 
-    return { data, total, page: +page, pageSize: +pageSize, totalPage }
+    return { data, total, page, page_size, total_page }
   }
 
-  async findOne(id: string): Promise<Comment> {
+  async findOne(id: string) {
     const queryBuilder = this.commentRepository
       .createQueryBuilder('comment')
       .where('comment.id = :id', { id })
@@ -141,7 +136,7 @@ export class CommentService {
     return comment
   }
 
-  async update(id: string, body: Partial<Comment>): Promise<Comment> {
+  async update(id: string, body: Partial<CommentEntity>) {
     const exist = await this.commentRepository.findOne(id)
     if (!exist) {
       throw new HttpException('评论不存在', HttpStatus.NOT_FOUND)
@@ -150,18 +145,21 @@ export class CommentService {
     return await this.commentRepository.save(updatedCategory)
   }
 
-  async remove(id: string): Promise<Comment> {
+  async remove(id: string) {
     const exist = await this.commentRepository.findOne(id)
     if (!exist) {
       throw new HttpException('评论不存在', HttpStatus.NOT_FOUND)
     }
-    if (exist.postId) {
-      await this.postService.updateComments(String(exist.postId), 'remove')
+    if (exist.article_id) {
+      await this.articleService.updateComments(
+        String(exist.article_id),
+        'remove'
+      )
     }
     return await this.commentRepository.remove(exist)
   }
 
-  async removeMany(ids: Array<string>): Promise<Comment[]> {
+  async removeMany(ids: Array<string>) {
     const exist = await this.commentRepository.findByIds(ids)
     if (!exist.length) {
       throw new HttpException('评论不存在', HttpStatus.NOT_FOUND)
@@ -169,7 +167,7 @@ export class CommentService {
     return await this.commentRepository.remove(exist)
   }
 
-  async getCount(): Promise<number> {
+  async getCount() {
     return await this.commentRepository.createQueryBuilder('comment').getCount()
   }
 }

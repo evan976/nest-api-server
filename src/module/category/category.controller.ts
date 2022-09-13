@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { CategoryService } from '@module/category/category.service'
-import { Category } from '@module/category/category.entity'
+import { CategoryEntity } from '@module/category/category.entity'
 import { JwtAuthGuard } from '@guard/jwt-auth.guard'
 import { Role, RoleGuard } from '@guard/role.guard'
 
@@ -26,7 +26,7 @@ export class CategoryController {
   @Post()
   @UseGuards(JwtAuthGuard)
   @Role('admin')
-  create(@Body() body: Partial<Category>) {
+  create(@Body() body: Partial<CategoryEntity>) {
     return this.categoryService.create(body)
   }
 
@@ -52,7 +52,7 @@ export class CategoryController {
   @Put(':id')
   @UseGuards(JwtAuthGuard)
   @Role('admin')
-  update(@Param('id') id: string, @Body() body: Partial<Category>) {
+  update(@Param('id') id: string, @Body() body: Partial<CategoryEntity>) {
     return this.categoryService.update(id, body)
   }
 
