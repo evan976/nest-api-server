@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Reflector } from '@nestjs/core'
-import { User } from '@module/user/user.entity'
+import { UserEntity } from '@module/user/user.entity'
 
 export const Role = (...role: string[]) => SetMetadata('role', role)
 
@@ -32,7 +32,7 @@ export class RoleGuard implements CanActivate {
       token = token.split(' ').pop()
     }
 
-    const user = this.jwtService.decode(token) as User
+    const user = this.jwtService.decode(token) as UserEntity
     if (!user) {
       return false
     }
