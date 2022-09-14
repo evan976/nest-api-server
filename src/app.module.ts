@@ -6,7 +6,7 @@ import { AppService } from '@/app.service'
 import { TagEntity } from '@module/tag/tag.entity'
 import { TagModule } from '@module/tag/tag.module'
 import { ArticleEntity } from '@/module/article/article.entity'
-import { PostModule } from '@/module/article/article.module'
+import { ArticleModule } from '@/module/article/article.module'
 import { parseEnv } from '@/app.env'
 import { CategoryEntity } from '@module/category/category.entity'
 import { CategoryModule } from '@module/category/category.module'
@@ -48,7 +48,7 @@ import { ConfigModule as OptionModule } from '@module/config/config.module'
       })
     }),
     TagModule,
-    PostModule,
+    ArticleModule,
     CategoryModule,
     CommentModule,
     AuthModule,

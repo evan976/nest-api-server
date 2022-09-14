@@ -171,7 +171,7 @@ export class ArticleService {
       .createQueryBuilder('article')
       .leftJoinAndSelect('article.category', 'category')
       .leftJoinAndSelect('article.tags', 'tags')
-      .where('article.article_id = :article_id', { articleId })
+      .where('article.article_id = :article_id', { article_id: articleId })
 
     const article = await queryBuilder.getOne()
 

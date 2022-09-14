@@ -39,6 +39,15 @@ export class CommentController {
     return this.commentService.findAll(query)
   }
 
+  @ApiOperation({ summary: '获取文章评论列表' })
+  @Get('article/:id')
+  async findAllByArticleId(
+    @Param('id') id: string,
+    @Query() query: Record<string, number>
+  ) {
+    return this.commentService.findAllByArticleId(id, query)
+  }
+
   @ApiOperation({ summary: '获取指定评论' })
   @Get(':id')
   async findOne(@Param('id') id: string) {

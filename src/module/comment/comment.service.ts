@@ -4,21 +4,23 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { ConfigService } from '@nestjs/config'
 import { Repository } from 'typeorm'
 import { CommentEntity } from '@module/comment/comment.entity'
-import { ArticleService } from '@/module/article/article.service'
+import { ArticleService } from '@module/article/article.service'
 import { parseUserAgent } from '@/utils/userAgent'
 import { EmailService } from '@/processor/email.service'
+import { ArticleEntity } from '@module/article/article.entity'
+import { PaginateService } from '@module/paginate/paginate.service'
 import { getNewCommentHtml, getReplyCommentHtml } from '@/utils/html'
 import { parseIp } from '@/utils/ip'
-import { ArticleEntity } from '../article/article.entity'
 
 @Injectable()
 export class CommentService {
   constructor(
+    @InjectRepository(CommentEntity)
+    private readonly commentRepository: Repository<CommentEntity>,
     private readonly emailService: EmailService,
     private readonly articleService: ArticleService,
     private readonly configService: ConfigService,
-    @InjectRepository(CommentEntity)
-    private readonly commentRepository: Repository<CommentEntity>
+    private readonly paginateService: PaginateService
   ) {}
 
   async create(ua: string, ip: string, body: Partial<CommentEntity>) {
@@ -91,7 +93,7 @@ export class CommentService {
 
     const subQuery = this.commentRepository
       .createQueryBuilder('comment')
-      .where('comment.parent_id=:parent_id')
+      .where('comment.parent_id = :parent_id')
 
     queryBuilder.skip((+page - 1) * +page_size)
     queryBuilder.take(+page_size)
@@ -121,6 +123,36 @@ export class CommentService {
     const total_page = Math.ceil(total / +page_size) || 1
 
     return { data, total, page, page_size, total_page }
+  }
+
+  async findAllByArticleId(articleId: string, params: Record<string, number>) {
+    const { page = 1, page_size = 12, sort = -1 } = params
+
+    const query = this.commentRepository
+      .createQueryBuilder('comment')
+      .where('comment.parent_id is NULL')
+      .andWhere('comment.article_id = :article_id', {
+        article_id: articleId
+      })
+      .andWhere('comment.status = :status', { status: '1' })
+      .orderBy('comment.created_at', sort === -1 ? 'DESC' : 'ASC')
+
+    const subQuery = this.commentRepository
+      .createQueryBuilder('comment')
+      .where('comment.parent_id = :parent_id')
+      .andWhere('comment.status = :status', { status: '1' })
+
+    const result = await this.paginateService.paginate(query, {
+      page: +page,
+      page_size: +page_size
+    })
+
+    for (const item of result.data) {
+      const replys = await subQuery.setParameter('parent_id', item.id).getMany()
+      Object.assign(item, { replys })
+    }
+
+    return result
   }
 
   async findOne(id: string) {
