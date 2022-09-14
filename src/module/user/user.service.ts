@@ -4,13 +4,15 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { ConfigService } from '@nestjs/config'
 import { Repository } from 'typeorm'
 import { UserEntity } from '@module/user/user.entity'
+import { PaginateService } from '@module/paginate/paginate.service'
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    private readonly paginateService: PaginateService
   ) {
     const logger = new Logger()
     const name = this.configService.get('ADMIN_USER')
@@ -44,16 +46,16 @@ export class UserService {
 
   async findAll(query: Record<string, string | number>) {
     const { page = 1, page_size = 12 } = query
-    const [data, total] = await this.userRepository
+    const queryBuilder = this.userRepository
       .createQueryBuilder('user')
       .orderBy('user.created_at', 'ASC')
-      .skip((+page - 1) * +page_size)
-      .take(+page_size)
-      .getManyAndCount()
 
-    const total_page = Math.ceil(total / +page_size) || 1
+    const result = await this.paginateService.paginate(queryBuilder, {
+      page: +page,
+      page_size: +page_size
+    })
 
-    return { data, total, page, page_size, total_page }
+    return result
   }
 
   async findOne(id: string) {
