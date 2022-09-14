@@ -22,4 +22,4 @@ import { PaginateModule } from '@module/paginate/paginate.module'
   providers: [ArticleService],
   exports: [ArticleService]
 })
-export class PostModule {}
+export class ArticleModule {}
