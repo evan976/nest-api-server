@@ -39,6 +39,12 @@ export class CommentController {
     return this.commentService.findAll(query)
   }
 
+  @ApiOperation({ summary: '获取评论列表（扁平化）' })
+  @Get('list')
+  async findCommentList(@Query() query: Record<string, string | number>) {
+    return this.commentService.findCommentList(query)
+  }
+
   @ApiOperation({ summary: '获取文章评论列表' })
   @Get('article/:id')
   async findAllByArticleId(
