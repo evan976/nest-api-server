@@ -86,7 +86,7 @@ export class CommentService {
   async findAll(params: Record<string, string | number>) {
     const { page = 1, page_size = 12, status, ...rest } = params
 
-    const queryBuilder = this.commentRepository
+    const query = this.commentRepository
       .createQueryBuilder('comment')
       .where('comment.parent_id is NULL')
       .orderBy('comment.created_at', 'DESC')
@@ -95,34 +95,59 @@ export class CommentService {
       .createQueryBuilder('comment')
       .where('comment.parent_id = :parent_id')
 
-    queryBuilder.skip((+page - 1) * +page_size)
-    queryBuilder.take(+page_size)
-
     if (status) {
-      queryBuilder.andWhere('comment.status = :status', { status })
+      query.andWhere('comment.status = :status', { status })
       subQuery.andWhere('comment.status = :status', { status })
     }
 
     if (rest) {
       Object.keys(rest).forEach((key) => {
-        queryBuilder
+        query
           .andWhere(`comment.${key} LIKE :${key}`)
           .setParameter(`${key}`, `%${rest[key]}%`)
       })
     }
 
-    const [data, total] = await queryBuilder.getManyAndCount()
+    const result = await this.paginateService.paginate(query, {
+      page: +page,
+      page_size: +page_size
+    })
 
-    for (const item of data) {
+    for (const item of result.data) {
       const subComments = await subQuery
         .setParameter('parent_id', item.id)
         .getMany()
       Object.assign(item, { replys: subComments })
     }
 
-    const total_page = Math.ceil(total / +page_size) || 1
+    return result
+  }
 
-    return { data, total, page, page_size, total_page }
+  async findCommentList(params: Record<string, string | number>) {
+    const { page = 1, page_size = 12, status, ...rest } = params
+
+    const query = this.commentRepository
+      .createQueryBuilder('comment')
+      .orderBy('comment.created_at', 'DESC')
+
+    if (status) {
+      query.andWhere('comment.status = :status', { status })
+    }
+
+    if (rest) {
+      Object.keys(rest).forEach((key) => {
+        query
+          .andWhere(`comment.${key} LIKE :${key}`)
+          .setParameter(`${key}`, `%${rest[key]}%`)
+      })
+    }
+
+    const result = await this.paginateService.paginate(query, {
+      page: +page,
+      page_size: +page_size
+    })
+
+    return result
   }
 
   async findAllByArticleId(articleId: string, params: Record<string, number>) {
