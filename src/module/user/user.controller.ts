@@ -16,7 +16,7 @@ import {
 import { Request } from 'express'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { UserService } from '@module/user/user.service'
-import { User } from '@module/user/user.entity'
+import { UserEntity } from '@module/user/user.entity'
 import { Role, RoleGuard } from '@guard/role.guard'
 import { JwtAuthGuard } from '@guard/jwt-auth.guard'
 
@@ -47,7 +47,7 @@ export class UserController {
   @Role('admin')
   @UseInterceptors(ClassSerializerInterceptor)
   @Post()
-  async register(@Body() body: Partial<User>) {
+  async register(@Body() body: Partial<UserEntity>) {
     return await this.userService.createUser(body)
   }
 
@@ -56,7 +56,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Role('admin')
   @Put(':id')
-  async update(@Param() id: string, @Body() body: Partial<User>) {
+  async update(@Param() id: string, @Body() body: Partial<UserEntity>) {
     return await this.userService.update(id, body)
   }
 
@@ -67,7 +67,8 @@ export class UserController {
   @Patch(':id')
   async updatePassword(
     @Param() id: string,
-    @Body() body: Pick<User, 'password' | 'newPassword' | 'relNewPassword'>
+    @Body()
+    body: Pick<UserEntity, 'password' | 'new_password' | 'rel_new_password'>
   ) {
     return await this.userService.updatePassword(id, body)
   }

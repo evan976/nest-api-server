@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { CategoryService } from '@module/category/category.service'
-import { Category } from '@module/category/category.entity'
+import { CategoryEntity } from '@module/category/category.entity'
 import { JwtAuthGuard } from '@guard/jwt-auth.guard'
 import { Role, RoleGuard } from '@guard/role.guard'
 
@@ -26,7 +26,7 @@ export class CategoryController {
   @Post()
   @UseGuards(JwtAuthGuard)
   @Role('admin')
-  create(@Body() body: Partial<Category>) {
+  create(@Body() body: Partial<CategoryEntity>) {
     return this.categoryService.create(body)
   }
 
@@ -42,11 +42,17 @@ export class CategoryController {
     return this.categoryService.findOne(id)
   }
 
+  @ApiOperation({ summary: '根据分类别名获取指定分类' })
+  @Get('slug/:slug')
+  findByCategorySlug(@Param('slug') slug: string) {
+    return this.categoryService.findByCategorySlug(slug)
+  }
+
   @ApiOperation({ summary: '更新分类' })
   @Put(':id')
   @UseGuards(JwtAuthGuard)
   @Role('admin')
-  update(@Param('id') id: string, @Body() body: Partial<Category>) {
+  update(@Param('id') id: string, @Body() body: Partial<CategoryEntity>) {
     return this.categoryService.update(id, body)
   }
 

@@ -1,17 +1,18 @@
+import { Repository } from 'typeorm'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
-import { PaginateResult } from '@interface/app.interface'
-import { Category } from '@module/category/category.entity'
+import { CategoryEntity } from '@module/category/category.entity'
+import { PaginateService } from '@module/paginate/paginate.service'
 
 @Injectable()
 export class CategoryService {
   constructor(
-    @InjectRepository(Category)
-    private readonly categoryRepository: Repository<Category>
+    @InjectRepository(CategoryEntity)
+    private readonly categoryRepository: Repository<CategoryEntity>,
+    private readonly paginateService: PaginateService
   ) {}
 
-  async create(category: Partial<Category>): Promise<Category> {
+  async create(category: Partial<CategoryEntity>) {
     const { name, slug } = category
 
     const categories = await this.categoryRepository
@@ -32,29 +33,28 @@ export class CategoryService {
     return model
   }
 
-  async findAll(
-    query: Record<string, string | number>
-  ): Promise<PaginateResult<Category>> {
-    const [page, pageSize] = [query.page || 1, query.pageSize || 12].map((v) =>
-      Number(v)
+  async findAll(query: Record<string, string | number>) {
+    const { page = 1, page_size = 12 } = query
+
+    const queryBuilder = this.categoryRepository
+      .createQueryBuilder('category')
+      .leftJoinAndSelect('category.articles', 'articles')
+      .orderBy('category.created_at', 'DESC')
+
+    const result = await this.paginateService.paginate<CategoryEntity>(
+      queryBuilder,
+      {
+        page: +page,
+        page_size: +page_size
+      }
     )
 
-    const [data, total] = await this.categoryRepository
-      .createQueryBuilder('category')
-      .leftJoinAndSelect('category.posts', 'posts')
-      .orderBy('category.createdAt', 'DESC')
-      .skip((page - 1) * pageSize)
-      .take(pageSize)
-      .getManyAndCount()
-
-    const totalPage = Math.ceil(total / pageSize) || 1
-
-    data.forEach((v) => {
-      Object.assign(v, { postCount: v.posts.length })
-      delete v.posts
+    result.data.forEach((v) => {
+      Object.assign(v, { article_count: v.articles.length })
+      delete v.articles
     })
 
-    return { data, total, page, pageSize, totalPage }
+    return result
   }
 
   async getCount(): Promise<number> {
@@ -63,7 +63,7 @@ export class CategoryService {
       .getCount()
   }
 
-  async findOne(id: string): Promise<Category> {
+  async findOne(id: string) {
     const category = await this.categoryRepository.findOne(id)
     if (!category) {
       throw new HttpException('分类不存在', HttpStatus.NOT_FOUND)
@@ -71,7 +71,19 @@ export class CategoryService {
     return category
   }
 
-  async update(id: string, body: Partial<Category>): Promise<Category> {
+  async findByCategorySlug(slug: string) {
+    const category = await this.categoryRepository
+      .createQueryBuilder('category')
+      .where('category.slug = :slug', { slug })
+      .getOne()
+
+    if (!category) {
+      throw new HttpException('分类不存在', HttpStatus.NOT_FOUND)
+    }
+    return category
+  }
+
+  async update(id: string, body: Partial<CategoryEntity>) {
     const category = await this.categoryRepository.findOne(id)
     if (!category) {
       throw new HttpException('分类不存在', HttpStatus.NOT_FOUND)
@@ -80,7 +92,7 @@ export class CategoryService {
     return await this.categoryRepository.save(updatedCategory)
   }
 
-  async remove(id: string): Promise<Category> {
+  async remove(id: string) {
     try {
       const category = await this.categoryRepository.findOne(id)
       if (!category) {
@@ -95,7 +107,7 @@ export class CategoryService {
     }
   }
 
-  async removeMany(ids: Array<string>): Promise<Category[]> {
+  async removeMany(ids: Array<string>) {
     try {
       const exist = await this.categoryRepository.findByIds(ids)
       if (!exist.length) {

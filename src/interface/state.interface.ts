@@ -16,12 +16,6 @@ export enum OriginState {
 
 export enum CommentState {
   Recycle = -1,
-  Reject = 0,
+  Review = 0,
   Pass = 1
-}
-
-export enum Weights {
-  Large = 3,
-  Medium = 2,
-  Small = 1
 }

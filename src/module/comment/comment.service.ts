@@ -3,41 +3,37 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ConfigService } from '@nestjs/config'
 import { Repository } from 'typeorm'
-import { Comment } from '@module/comment/comment.entity'
-import { PostService } from '@module/post/post.service'
-import { PaginateResult } from '@/interface/app.interface'
+import { CommentEntity } from '@module/comment/comment.entity'
+import { ArticleService } from '@module/article/article.service'
 import { parseUserAgent } from '@/utils/userAgent'
 import { EmailService } from '@/processor/email.service'
+import { ArticleEntity } from '@module/article/article.entity'
+import { PaginateService } from '@module/paginate/paginate.service'
 import { getNewCommentHtml, getReplyCommentHtml } from '@/utils/html'
 import { parseIp } from '@/utils/ip'
-import { Post } from '../post/post.entity'
 
 @Injectable()
 export class CommentService {
   constructor(
+    @InjectRepository(CommentEntity)
+    private readonly commentRepository: Repository<CommentEntity>,
     private readonly emailService: EmailService,
-    private readonly postService: PostService,
+    private readonly articleService: ArticleService,
     private readonly configService: ConfigService,
-    @InjectRepository(Comment)
-    private readonly commentRepository: Repository<Comment>
+    private readonly paginateService: PaginateService
   ) {}
 
-  async create(
-    ua: string,
-    ip: string,
-    body: Partial<Comment>
-  ): Promise<Comment> {
-    const { name, email, content, postId, parentId } = body
+  async create(ua: string, ip: string, body: Partial<CommentEntity>) {
+    const { name, email, content, article_id, parent_id } = body
     if (!name || !email || !content) {
       throw new HttpException('参数错误', HttpStatus.BAD_REQUEST)
     }
 
-    const { text, data } = parseUserAgent(ua)
-    body.userAgent = text
+    const { data } = parseUserAgent(ua)
     body.browser = data.browser
     body.os = data.os
     body.ip = ip
-    
+
     if (!body.avatar) {
       body.avatar = gravatar.url(body.email)
     }
@@ -50,13 +46,16 @@ export class CommentService {
 
     const newComment = this.commentRepository.create(body)
 
-    let post: Post
+    let post: ArticleEntity
 
-    if (postId) {
-      post = await this.postService.updateComments(String(postId), 'create')
+    if (article_id) {
+      post = await this.articleService.updateComments(
+        String(article_id),
+        'create'
+      )
     }
 
-    if (!body.parentId) {
+    if (!body.parent_id) {
       this.emailService.sendEmail({
         to: this.configService.get('ACCOUNT'),
         subject: '博客评论通知',
@@ -68,7 +67,7 @@ export class CommentService {
         )
       })
     } else {
-      const comment = await this.findOne(String(parentId))
+      const comment = await this.findOne(String(parent_id))
       this.emailService.sendEmail({
         to: comment.email,
         subject: '评论回复通知',
@@ -84,34 +83,104 @@ export class CommentService {
     return await this.commentRepository.save(newComment)
   }
 
-  async findAll(
-    query: Record<string, string | number>
-  ): Promise<PaginateResult<Comment>> {
-    const { page = 1, pageSize = 12, ...rest } = query
-    const [_page, _pageSize] = [page, pageSize].map((v) => Number(v))
+  async findAll(params: Record<string, string | number>) {
+    const { page = 1, page_size = 12, status, ...rest } = params
 
-    const queryBuilder = this.commentRepository
+    const query = this.commentRepository
       .createQueryBuilder('comment')
-      .orderBy('comment.createdAt', 'DESC')
-      .skip((_page - 1) * _pageSize)
-      .take(_pageSize)
+      .where('comment.parent_id is NULL')
+      .orderBy('comment.created_at', 'DESC')
+
+    const subQuery = this.commentRepository
+      .createQueryBuilder('comment')
+      .where('comment.parent_id = :parent_id')
+
+    if (status) {
+      query.andWhere('comment.status = :status', { status })
+      subQuery.andWhere('comment.status = :status', { status })
+    }
 
     if (rest) {
       Object.keys(rest).forEach((key) => {
-        queryBuilder
+        query
           .andWhere(`comment.${key} LIKE :${key}`)
           .setParameter(`${key}`, `%${rest[key]}%`)
       })
     }
 
-    const [data, total] = await queryBuilder.getManyAndCount()
+    const result = await this.paginateService.paginate(query, {
+      page: +page,
+      page_size: +page_size
+    })
 
-    const totalPage = Math.ceil(total / _pageSize) || 1
+    for (const item of result.data) {
+      const subComments = await subQuery
+        .setParameter('parent_id', item.id)
+        .getMany()
+      Object.assign(item, { replys: subComments })
+    }
 
-    return { data, total, page: _page, pageSize: _pageSize, totalPage }
+    return result
   }
 
-  async findOne(id: string): Promise<Comment> {
+  async findCommentList(params: Record<string, string | number>) {
+    const { page = 1, page_size = 12, status, ...rest } = params
+
+    const query = this.commentRepository
+      .createQueryBuilder('comment')
+      .orderBy('comment.created_at', 'DESC')
+
+    if (status) {
+      query.andWhere('comment.status = :status', { status })
+    }
+
+    if (rest) {
+      Object.keys(rest).forEach((key) => {
+        query
+          .andWhere(`comment.${key} LIKE :${key}`)
+          .setParameter(`${key}`, `%${rest[key]}%`)
+      })
+    }
+
+    const result = await this.paginateService.paginate(query, {
+      page: +page,
+      page_size: +page_size
+    })
+
+    return result
+  }
+
+  async findAllByArticleId(articleId: string, params: Record<string, number>) {
+    const { page = 1, page_size = 12, sort = -1 } = params
+
+    const query = this.commentRepository
+      .createQueryBuilder('comment')
+      .where('comment.parent_id is NULL')
+      .andWhere('comment.article_id = :article_id', {
+        article_id: articleId
+      })
+      .andWhere('comment.status = :status', { status: '1' })
+      .orderBy('comment.created_at', sort === -1 ? 'DESC' : 'ASC')
+
+    const subQuery = this.commentRepository
+      .createQueryBuilder('comment')
+      .where('comment.parent_id = :parent_id')
+      .andWhere('comment.status = :status', { status: '1' })
+
+    const result = await this.paginateService.paginate(query, {
+      page: +page,
+      page_size: +page_size
+    })
+
+    for (const item of result.data) {
+      const replys = await subQuery.setParameter('parent_id', item.id).getMany()
+      Object.assign(item, { replys })
+    }
+
+    return result
+  }
+
+  async findOne(id: string) {
     const queryBuilder = this.commentRepository
       .createQueryBuilder('comment')
       .where('comment.id = :id', { id })
@@ -124,7 +193,7 @@ export class CommentService {
     return comment
   }
 
-  async update(id: string, body: Partial<Comment>): Promise<Comment> {
+  async update(id: string, body: Partial<CommentEntity>) {
     const exist = await this.commentRepository.findOne(id)
     if (!exist) {
       throw new HttpException('评论不存在', HttpStatus.NOT_FOUND)
@@ -133,18 +202,21 @@ export class CommentService {
     return await this.commentRepository.save(updatedCategory)
   }
 
-  async remove(id: string): Promise<Comment> {
+  async remove(id: string) {
     const exist = await this.commentRepository.findOne(id)
     if (!exist) {
       throw new HttpException('评论不存在', HttpStatus.NOT_FOUND)
     }
-    if (exist.postId) {
-      await this.postService.updateComments(String(exist.postId), 'remove')
+    if (exist.article_id) {
+      await this.articleService.updateComments(
+        String(exist.article_id),
+        'remove'
+      )
     }
     return await this.commentRepository.remove(exist)
   }
 
-  async removeMany(ids: Array<string>): Promise<Comment[]> {
+  async removeMany(ids: Array<string>) {
     const exist = await this.commentRepository.findByIds(ids)
     if (!exist.length) {
       throw new HttpException('评论不存在', HttpStatus.NOT_FOUND)
@@ -152,7 +224,7 @@ export class CommentService {
     return await this.commentRepository.remove(exist)
   }
 
-  async getCount(): Promise<number> {
+  async getCount() {
     return await this.commentRepository.createQueryBuilder('comment').getCount()
   }
 }

@@ -12,10 +12,11 @@ import {
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { CommentService } from '@module/comment/comment.service'
-import { Comment } from '@module/comment/comment.entity'
+import { CommentEntity } from '@module/comment/comment.entity'
 import { Role, RoleGuard } from '@guard/role.guard'
 import { JwtAuthGuard } from '@/guard/jwt-auth.guard'
 import { getClientIP } from '@/utils/ip'
+import type { Request } from 'express'
 
 @ApiTags('评论')
 @ApiBearerAuth()
@@ -26,7 +27,7 @@ export class CommentController {
 
   @ApiOperation({ summary: '新增评论' })
   @Post()
-  async create(@Req() req, @Body() body: Partial<Comment>) {
+  async create(@Req() req: Request, @Body() body: Partial<CommentEntity>) {
     const userAgent = req.headers['user-agent']
     const ip = getClientIP(req)
     return this.commentService.create(userAgent, ip, body)
@@ -36,6 +37,21 @@ export class CommentController {
   @Get()
   async findAll(@Query() query: Record<string, string | number>) {
     return this.commentService.findAll(query)
+  }
+
+  @ApiOperation({ summary: '获取评论列表（扁平化）' })
+  @Get('list')
+  async findCommentList(@Query() query: Record<string, string | number>) {
+    return this.commentService.findCommentList(query)
+  }
+
+  @ApiOperation({ summary: '获取文章评论列表' })
+  @Get('article/:id')
+  async findAllByArticleId(
+    @Param('id') id: string,
+    @Query() query: Record<string, number>
+  ) {
+    return this.commentService.findAllByArticleId(id, query)
   }
 
   @ApiOperation({ summary: '获取指定评论' })
@@ -48,7 +64,7 @@ export class CommentController {
   @UseGuards(JwtAuthGuard)
   @Role('admin')
   @Put(':id')
-  async update(@Param('id') id: string, @Body() body: Partial<Comment>) {
+  async update(@Param('id') id: string, @Body() body: Partial<CommentEntity>) {
     console.log(id, body)
     return this.commentService.update(id, body)
   }
