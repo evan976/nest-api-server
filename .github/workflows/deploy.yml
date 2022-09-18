@@ -15,7 +15,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '16'
-      
+
       - name: Install & Build
         run: |
           yarn install
@@ -27,12 +27,12 @@ jobs:
         uses: easingthemes/ssh-deploy@v2.2.11
         env:
           SSH_PRIVATE_KEY: ${{ secrets.ACCESS_TOKEN }}
-          ARGS: "-avzr --delete --exclude=/.env/ --exclude=/.env.production/"
-          SOURCE: "/"
+          ARGS: '-avzr --delete --exclude=/.env/ --exclude=/.env.production/'
+          SOURCE: '/'
           REMOTE_HOST: ${{ secrets.SSH_HOST }}
           REMOTE_USER: ${{ secrets.SSH_USERNAME }}
           TARGET: /usr/local/src/nestpress
-          EXCLUDE: "/node_modules/, /.git/, /dist/, /.vscode/, /.DS_Store/"
+          EXCLUDE: '/node_modules/, /.git/, /dist/, /.vscode/, /.DS_Store/'
 
       - name: Server Reload
         uses: appleboy/ssh-action@master
