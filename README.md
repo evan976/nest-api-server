@@ -14,7 +14,7 @@ v2.x 全新升级，采用 NestJS + TypeScript 重构，数据库由 MongoDB 迁
 
 新增 API：评论模块、邮件服务、管理员
 
-接口文档：[docs](https://api.evanone.site/docs/)
+接口文档：[docs](https://api.evanone.me/docs/)
 
 原项目地址：[express-api-server](https://github.com/wujihua118/express-api-server)
 
@@ -22,7 +22,7 @@ v2.x 全新升级，采用 NestJS + TypeScript 重构，数据库由 MongoDB 迁
 
 基本说明
 
-- 接口根地址：http://localhost:8000/v2
+- 接口根地址：<http://localhost:8000/v2>
 - 服务端已开启 CORS 跨域支持
 - 需要授权的 API ，必须在请求头（headers）中使用 Authorization 字段提供 token 令牌
 - 数据返回格式统一使用 JSON
@@ -78,9 +78,9 @@ HTTP 状态码
 克隆项目到本地，安装依赖，启动开发服务
 
 ```bash
-$ pnpm install
+pnpm install
 
-$ pnpm run start:dev
+pnpm run start:dev
 ```
 
 ## 最后

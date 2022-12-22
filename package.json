@@ -39,13 +39,15 @@
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
     "qiniu": "^7.4.0",
+    "qs": "^6.11.0",
     "reflect-metadata": "^0.1.13",
     "request": "^2.88.2",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "swagger-ui-express": "^4.3.0",
     "typeorm": "^0.2.45",
-    "ua-parser-js": "^1.0.2"
+    "ua-parser-js": "^1.0.2",
+    "util": "^0.12.4"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.2.1",

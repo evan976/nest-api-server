@@ -21,12 +21,12 @@ async function bootstrap() {
         'http://localhost:3000',
         'http://localhost:8080',
         'http://127.0.0.1:8080',
-        'http://evanone.site',
-        'https://evanone.site',
-        'http://admin.evanone.site',
-        'https://admin.evanone.site',
-        'http://static.evanone.site',
-        'https://static.evanone.site'
+        'http://evanone.me',
+        'https://evanone.me',
+        'http://admin.evanone.me',
+        'https://admin.evanone.me',
+        'http://cdn.evanone.me',
+        'https://cdn.evanone.me'
       ],
       credentials: true
     },
