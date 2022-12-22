@@ -44,4 +44,4 @@ jobs:
             cd /usr/local/src/nestpress
             yarn
             yarn build
-            pm2 reload server
+            pm2 reload nest
